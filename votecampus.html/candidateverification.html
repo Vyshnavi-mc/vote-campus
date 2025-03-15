@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate List - E-Voting System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #333;
+        }
+        #searchBox {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .action-buttons button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .view-button {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .verify-button {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Candidate List</h1>
+        <input type="text" id="searchBox" onkeyup="searchVoter()" placeholder="Search voter by name or ID...">
+        
+        <table id="voterTable">
+            <thead>
+                <tr>
+                    <th>Admission Number</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>KGR22CS001</td>
+                    <td>John Doe</td>
+                    <td class="action-buttons">
+                        <button class="view-button" onclick="viewVoter('KGR22CS001')">View</button>
+                        <button class="verify-button" onclick="verifyVoter('KGR22CS001')">Verify</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>KGR22CS02</td>
+                    <td>Jane Smith</td>
+                    <td class="action-buttons">
+                        <button class="view-button" onclick="viewVoter('KGR22CS02')">View</button>
+                        <button class="verify-button" onclick="verifyVoter('KGR22CS02')">Verify</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>KGR22CS03</td>
+                    <td>Michael Brown</td>
+                    <td class="action-buttons">
+                        <button class="view-button" onclick="viewVoter('KGR22CS03')">View</button>
+                        <button class="verify-button" onclick="verifyVoter('KGR22CS03')">Verify</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>KGR22CS04</td>
+                    <td>Emily Johnson</td>
+                    <td class="action-buttons">
+                        <button class="view-button" onclick="viewVoter('KGR22CS04')">View</button>
+                        <button class="verify-button" onclick="verifyVoter('KGR22CS04')">Verify</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function searchVoter() {
+            let input = document.getElementById("searchBox").value.toUpperCase();
+            let table = document.getElementById("voterTable");
+            let tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                let tdName = tr[i].getElementsByTagName("td")[1];
+                let tdID = tr[i].getElementsByTagName("td")[0];
+                if (tdName || tdID) {
+                    let textValueName = tdName.textContent || tdName.innerText;
+                    let textValueID = tdID.textContent || tdID.innerText;
+                    if (textValueName.toUpperCase().indexOf(input) > -1 || textValueID.toUpperCase().indexOf(input) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function viewVoter(id) {
+            alert("Viewing details for voter ID: " + id);
+        }
+
+        function verifyVoter(id) {
+            alert("Verifying voter ID: " + id);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | E-Voting System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .signup-container {
+            background: rgb(24, 115, 131);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+    <script>
+        function validateForm(event) {
+            event.preventDefault();
+            var password = document.querySelector('input[name="password"]').value;
+            var confirmPassword = document.querySelector('input[name="confirm_password"]').value;
+            var errorMessage = document.getElementById('error-message');
+            
+            if (password !== confirmPassword) {
+                errorMessage.style.display = 'block';
+                return false;
+            } else {
+                errorMessage.style.display = 'none';
+                window.location.href = 'home.html';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="signup-container">
+        <h2>Sign Up for E-Voting</h2>
+        <form onsubmit="validateForm(event)">
+            <input type="text" name="full_name" placeholder="Enter Full Name" required>
+            <input type="text" name="username" placeholder="Enter Username" required>
+            <select name="role" required>
+                <option value="" disabled selected>Select Role</option>
+                <option value="Student">Student</option>
+                <option value="Faculty">Faculty</option>
+                <option value="Admin">Admin</option>
+            </select>
+            <input type="email" name="email" placeholder="Enter Email" required>
+            <input type="password" name="password" placeholder="Create Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <p id="error-message" class="error-message">Mismatch password</p>
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+</body>
+</html>

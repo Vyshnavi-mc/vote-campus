@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to VoteCampus</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            
+            background-image: url('https://electionbuddy.com/wp-content/uploads/2023/06/What-Is-Mobile-Voting.jpeg'); /* Add your image URL here */
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            color: #fff;
+            float:right
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+
+        .remember-me input {
+            margin-right: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+
+        .form-links {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .form-links a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .form-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                width: 90%;
+            }
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+            .form-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+        }
+    </style>
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();  // Prevent the form from submitting immediately
+
+            var username = document.getElementById('username').value;
+
+            if (username.startsWith('KGR')) {
+                window.location.href = 'studentportal.html';
+            } else if (username.startsWith('AD')) {
+                window.location.href = 'admin.html';
+            } else if (username.startsWith('FY')) {
+                window.location.href = 'faculty.html';
+            } else {
+                alert('Invalid username. Please ensure it starts with the correct prefix.');
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <h1>Welcome to VoteCampus</h1>
+    <p>Your trusted online voting platform for secure and transparent elections.</p>
+
+    <div class="login-container">
+        <h2>Login </h2>
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            
+            <button type="submit" class="btn">Login</button>
+        </form>
+        
+        <div class="form-links">
+            <a href="forgot.html">Forgot Password?</a>
+            <a href="signup.html">Sign Up?</a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoteCampus - Faculty Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body */
+        body {
+            font-family: Arial, sans-serif;
+            background:rgba(59, 87, 95, 0.811); /* Dark gradient */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
+        header {
+            background-color:rgba(59, 87, 95, 0.811) ; /* Dark background */
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        /* Home Text */
+        .home-text {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: bold;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            z-index: 10;
+            transition: color 0.3s ease;
+        }
+
+        .home-text:hover {
+            color: #10b981; /* Darker green */
+        }
+
+        /* Home Symbol and Text */
+        .home-text i {
+            margin-right: 8px;
+        }
+
+        /* Navigation Bar (Top) */
+        .top-nav {
+            background-color: rgba(0, 0, 0, 0.4); /* Dark background */
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .top-nav button {
+            background-color: #1062b9; /* Green buttons */
+            color: white;
+            font-size: 16px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .top-nav button:hover {
+            background-color: rgba(0, 0, 0, 0.6); /* Slightly darker background on hover */
+            transform: scale(1.05); /* Hover effect */
+        }
+
+        /* Content Section */
+        .content {
+            padding: 40px;
+            background-color: #f8f8f8; /* Off-white background for content */
+            min-height: 600px;
+            margin-top: 80px; /* Space for the navigation bar */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .content h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .content p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark footer */
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .top-nav button {
+                padding: 10px 20px; /* Smaller padding on smaller screens */
+                font-size: 14px;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        VoteCampus 
+    </header>
+
+    <!-- Home Text with Home Symbol -->
+    <div class="home-text" onclick="location.href='home.html'">
+        <i class="fas fa-home"></i> Home
+    </div>
+
+    <!-- Top Navigation Bar -->
+    <div class="top-nav">
+        <button onclick="location.href='notification.html'"><i class="fas fa-check-circle"></i> Election notification </button>
+        <button onclick="location.href='studentverification.html'"><i class="fas fa-check-circle"></i> Verify voters list </button>
+        <button onclick="location.href='candidateverification.html'"><i class="fas fa-check-circle"></i> Verify Candidate list</button>
+        <button onclick="location.href='voterlist.html'"><i class="fas fa-users"></i> View Voters List</button>
+        <button onclick="location.href='candidatelist.html'"><i class="fas fa-user-tie"></i> View Candidate List</button>
+        <button onclick="location.href='results.html'"><i class="fas fa-poll"></i> View Results</button>
+    </div>
+
+    <!-- Content Section -->
+    <div class="content">
+        <h2>Welcome!!!</h2>
+        <br>
+        <p>This page allows faculty members to verify the voters and candidate lists, view the lists, and view the election results. The buttons above lead to the respective tasks.</p>
+        <p>As a faculty member, you play an essential role in ensuring that only eligible voters and valid candidates are part of the election process. Please make sure to verify the lists thoroughly before proceeding with further actions.</p>
+    </div>
+
+    <footer>
+        &copy; 2025 VoteCampus. All Rights Reserved.
+    </footer>
+
+</body>
+</html>

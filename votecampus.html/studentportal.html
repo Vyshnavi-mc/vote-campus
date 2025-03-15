@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - E-Voting</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('evoting-background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-align: center;
+        }
+        .header {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .header h1 {
+            font-size: 3em;
+        }
+        .nav-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .nav-button {
+            background-color: rgba(0, 123, 255, 0.7);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .nav-button:hover {
+            background-color: rgba(0, 123, 255, 1);
+        }
+        .description {
+            margin-top: 40px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            width: 80%;
+            margin-left: 10%;
+            border-radius: 10px;
+        }
+        .description h2 {
+            font-size: 2em;
+        }
+        .icons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .icon {
+            font-size: 2.5em;
+            color: white;
+            transition: color 0.3s ease;
+        }
+        .icon:hover {
+            color: #00d2d2;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Welcome to the Student Portal</h1>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="nav-button" onclick="window.location.href='notification.html'">Election notification</button>
+        <button class="nav-button" onclick="window.location.href='studentregistration.html'">Student Registration</button>
+        <button class="nav-button" onclick="window.location.href='nomination.html'">Nomination Submission</button>
+        <button class="nav-button" onclick="window.location.href='status.html'">Check Nomination Status</button>
+        <button class="nav-button" onclick="window.location.href='voterlist.html'">Check Voter's List</button>
+        <button class="nav-button" onclick="window.location.href='votecast.html'">Vote Casting</button>
+        <button class="nav-button" onclick="window.location.href='results.html'">results</button>
+        <button class="nav-button" onclick="window.location.href='home.html'">Logout</button>
+
+    </div>
+
+    <div class="description">
+        <h2>About the E-Voting System</h2>
+        <p>This platform allows students to register, nominate candidates, check their nomination status, view the list of eligible voters, and cast their votes securely online. The system is designed to ensure a transparent, efficient, and easy voting process for all participants. Your participation is crucial for the democratic process within the student body.</p>
+    </div>
+
+    <div class="icons">
+        <div class="icon" onclick="window.location.href='notification.html'">🔔</div>
+        <div class="icon" onclick="window.location.href='student-registration.html'">📋</div>
+        <div class="icon" onclick="window.location.href='nomination.html'">🗳️</div>
+        <div class="icon" onclick="window.location.href='check-nomination-status.html'">🔍</div>
+        <div class="icon" onclick="window.location.href='voterlist.html'">👥</div>
+        <div class="icon" onclick="window.location.href='vote-casting.html'">🗳️</div>
+        <div class="icon" onclick="window.location.href='results.html'">📊</div>
+        <div class="icon" onclick="window.location.href='home.html'">🏠</div>
+        
+
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 E-Voting System. All Rights Reserved.</p>
+    </div>
+
+</body>
+</html>

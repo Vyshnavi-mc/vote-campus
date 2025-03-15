@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Election Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        .home-link {
+            font-size: 1.3rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .home-link i {
+            margin-right: 8px;
+        }
+
+        header nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        header nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        header nav ul li a:hover {
+            font-weight: bold;
+        }
+
+        main {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            display: block;
+            text-align: left;
+        }
+
+        input, select {
+            padding: 10px;
+            margin-top: 5px;
+            width: 100%;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .enable-disable-btn {
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .enable-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .disable-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- Home Link -->
+        <a href="admin.html" class="home-link">
+            <i class="fas fa-home"></i> Home
+        </a>
+
+        <h1>Admin Panel - Election Management</h1>
+
+        <nav>
+            <ul>
+                <li><a href="logout.html">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        
+        <section class="container">
+              <!-- Election Creation Section -->
+        
+              <h2>Create New Election</h2>
+              <form action="create_election.php" method="POST">
+                  
+                  <!-- Election Details -->
+                  <label for="election_name">Election Name:</label>
+                  <input type="text" id="election_name" name="election_name" required>
+  
+                  <label for="start_date">Election Start Date:</label>
+                  <input type="date" id="start_date" name="start_date" required>
+  
+                  <label for="end_date">Election End Date:</label>
+                  <input type="date" id="end_date" name="end_date" required>
+  
+                  <label for="status">Election Status:</label>
+                  <select id="status" name="status" required>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                  </select>
+  
+                  <button type="submit">Enable</button>
+              </form>
+              <!-- Voter Registration Section -->
+            <h2>Student  Registration</h2>
+            <label for="voter_registration_start">Registration Start Date:</label>
+            <input type="date" id="voter_registration_start" name="voter_registration_start" required>
+
+            <label for="voter_registration_end">Registration End Date:</label>
+            <input type="date" id="voter_registration_end" name="voter_registration_end" required>
+
+            <button type="button" class="enable-disable-btn enable-btn" id="voter-registration-btn">Enable Voter Registration</button>
+        
+            <h2>provisional voter list</h2>
+            <label for="publish_date_provisional_voterlist"> Date of publising of provisional voter list :</label>
+            <input type="date" id="publish_date_provisional_voterlist" name="publish_date_provisional_voterlist" required>
+
+           
+
+            <button type="button" class="enable-disable-btn enable-btn" id="voter-registration-btn">Publish Voter list </button>
+            <h2>Final voter list</h2>
+            <label for="publish_date_final_voterlist"> Date of publising of provisional voter list :</label>
+            <input type="date" id="publish_date_final_voterlist" name="publish_date_final_voterlist" required>
+
+           
+
+            <button type="button" class="enable-disable-btn enable-btn" id="voter-registration-btn">Publish Voter list </button>
+
+        <!-- Nomination Submission Section -->
+        
+            <h2>Nomination Submission</h2>
+            <label for="nomination_start">Nomination Start Date:</label>
+            <input type="date" id="nomination_start" name="nomination_start" required>
+
+            <label for="nomination_end">Nomination End Date:</label>
+            <input type="date" id="nomination_end" name="nomination_end" required>
+
+            <button type="button" class="enable-disable-btn enable-btn" id="nomination-btn">Enable Nomination Submission</button>
+        
+            <h2> publish valid Nomination</h2>
+            <label for="nomination_publish"> Date of publishing valid nomination:</label>
+            <input type="date" id="nomination_valid" name="nomination_valid" required>
+            <button type="button" class="enable-disable-btn enable-btn" id="voter-registration-btn">publish</button>
+        
+            <h2> Withdrawal of candidates</h2>
+            <label for="Withdrawal"> Date of Withdrawal of candidates:</label>
+            <input type="date" id="Withdrawal" name="Withdrawal" required>
+            <button type="button" class="enable-disable-btn enable-btn" id="Withdrawal">publish</button>
+
+         <h2> publish final list of candidates</h2>
+            <label for="publish"> Date of Withdrawal of candidates:</label>
+            <input type="date" id="publish" name="publish" required>
+            <button type="button" class="enable-disable-btn enable-btn" id="Withdrawal">publish</button>
+            
+            <h2> Vote casting </h2>
+            <label for="vote_casting"> Date of vote casting:</label>
+            <input type="date" id="vote_casting" name="vote_casting" required>
+            <button type="button" class="enable-disable-btn enable-btn" id="vote_casting">publish</button>
+            
+            <h2> Result publishing </h2>
+            <label for="Result publishing"> Date of result publishing:</label>
+            <input type="date" id="vote_casting" name="vote_casting" required>
+            <button type="button" class="enable-disable-btn enable-btn" id="vote_casting">publish Results</button>
+            
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 College Voting System. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Enable/Disable buttons logic
+        document.getElementById('voter-registration-btn').addEventListener('click', function() {
+            if (this.classList.contains('enable-btn')) {
+                this.classList.remove('enable-btn');
+                this.classList.add('disable-btn');
+                this.textContent = 'Disable Voter Registration';
+            } else {
+                this.classList.remove('disable-btn');
+                this.classList.add('enable-btn');
+                this.textContent = 'Enable Voter Registration';
+            }
+        });
+
+        document.getElementById('nomination-btn').addEventListener('click', function() {
+            if (this.classList.contains('enable-btn')) {
+                this.classList.remove('enable-btn');
+                this.classList.add('disable-btn');
+                this.textContent = 'Disable Nomination Submission';
+            } else {
+                this.classList.remove('disable-btn');
+                this.classList.add('enable-btn');
+                this.textContent = 'Enable Nomination Submission';
+            }
+        });
+    </script>
+
+</body>
+</html>

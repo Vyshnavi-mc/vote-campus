@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password - E-Voting System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+
+        .forgot-password-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745; /* Green button color */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+
+        .back-to-login {
+            text-align: center;
+            font-size: 14px;
+            color: #36a4c3;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .back-to-login:hover {
+            text-decoration: underline;
+        }
+
+        .otp-section, .password-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="forgot-password-container">
+    <h1>Forgot Your Password?</h1>
+    <p>Enter your email address to receive an OTP.</p>
+    
+    <!-- Step 1: Enter Email to Send OTP -->
+    <div class="form-group" id="email-section">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required>
+    </div>
+
+    <button type="button" class="btn" id="sendOtpBtn">Send OTP</button>
+
+    <!-- Step 2: OTP Verification -->
+    <div class="otp-section" id="otp-section">
+        <p>Enter the OTP sent to your email:</p>
+        <div class="form-group">
+            <label for="otp">OTP</label>
+            <input type="text" id="otp" name="otp" required>
+        </div>
+
+        <button type="button" class="btn" id="verifyOtpBtn">Verify OTP</button>
+    </div>
+
+    <!-- Step 3: Password Reset -->
+    <div class="password-section" id="password-section">
+        <p>Enter your new password:</p>
+        <div class="form-group">
+            <label for="newPassword">New Password</label>
+            <input type="password" id="newPassword" name="newPassword" required>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Confirm New Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+        </div>
+
+        <button type="button" class="btn" id="changePasswordBtn">Change Password</button>
+    </div>
+
+    <!-- Back to Login -->
+    <a href="home.html" class="back-to-login">Back to Login</a>
+</div>
+
+<script>
+    // Simulate sending OTP
+    document.getElementById('sendOtpBtn').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        if (email === '') {
+            alert('Please enter a valid email address');
+            return;
+        }
+
+        // Simulate sending OTP (you can add backend logic here)
+        alert('OTP sent to ' + email);
+
+        // Hide the email section and show the OTP section
+        document.getElementById('email-section').style.display = 'none';
+        document.getElementById('sendOtpBtn').style.display = 'none';
+        document.getElementById('otp-section').style.display = 'block';
+    });
+
+    // Simulate OTP verification
+    document.getElementById('verifyOtpBtn').addEventListener('click', function() {
+        const otp = document.getElementById('otp').value;
+        if (otp === '') {
+            alert('Please enter the OTP');
+            return;
+        }
+
+        // Simulate OTP verification (you can add backend logic here)
+        alert('OTP verified!');
+
+        // Hide OTP section and show password reset section
+        document.getElementById('otp-section').style.display = 'none';
+        document.getElementById('password-section').style.display = 'block';
+    });
+
+    // Simulate password change
+    document.getElementById('changePasswordBtn').addEventListener('click', function() {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (newPassword === '' || confirmPassword === '') {
+            alert('Please enter both password fields');
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+
+        // Simulate password change (you can add backend logic here)
+        alert('Your password has been successfully changed!');
+
+        // Redirect to login page after password change
+        window.location.href = 'home.html';
+    });
+</script>
+
+</body>
+</html>

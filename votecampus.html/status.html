@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College E-Voting - Nomination Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 90%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .withdraw-button {
+            background-color: #dc3545;
+        }
+        .withdraw-button:hover {
+            background-color: #c82333;
+        }
+        .status {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Check Nomination Status</h2>
+        <input type="text" id="nomineeCode" placeholder="Enter Unique Code" required>
+        <button onclick="checkStatus()">Check Status</button>
+        <button class="withdraw-button" id="withdrawButton" onclick="withdrawNomination()" style="display:none;">Withdraw Nomination</button>
+        <p class="status" id="statusMessage"></p>
+    </div>
+
+    <script>
+        // Sample nominee data with status
+        const nominees = {
+            "ABC123": "Accepted",
+            "DEF456": "Rejected",
+            "GHI789": "In Process"
+        };
+
+        function checkStatus() {
+            const code = document.getElementById("nomineeCode").value.trim().toUpperCase();
+            const statusMessage = document.getElementById("statusMessage");
+            const withdrawButton = document.getElementById("withdrawButton");
+            
+            if (code && nominees.hasOwnProperty(code)) {
+                statusMessage.innerText = `Nomination Status: ${nominees[code]}`;
+                statusMessage.style.color = nominees[code] === "Accepted" ? "green" : nominees[code] === "Rejected" ? "red" : "orange";
+                withdrawButton.style.display = nominees[code] === "Accepted" ? "block" : "none";
+            } else if (!code) {
+                statusMessage.innerText = "Please enter a valid unique code.";
+                statusMessage.style.color = "black";
+                withdrawButton.style.display = "none";
+            } else {
+                statusMessage.innerText = "Invalid Code! Please check and try again.";
+                statusMessage.style.color = "black";
+                withdrawButton.style.display = "none";
+            }
+        }
+
+        function withdrawNomination() {
+            const code = document.getElementById("nomineeCode").value.trim().toUpperCase();
+            const statusMessage = document.getElementById("statusMessage");
+            const withdrawButton = document.getElementById("withdrawButton");
+            
+            if (code && nominees[code] === "Accepted") {
+                nominees[code] = "Withdrawn";
+                statusMessage.innerText = `Nomination Status: Withdrawn`;
+                statusMessage.style.color = "gray";
+                withdrawButton.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

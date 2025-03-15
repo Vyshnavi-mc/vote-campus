@@ -1,0 +1,178 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nomination Submission - College Election</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f4f5;
+            text-align: left;
+            padding: 20px;
+        }
+        .container {
+            background: rgb(166, 162, 162);
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        label {
+            display: inline-block;
+            width: 180px; 
+            font-weight: bold;
+            vertical-align: top;
+        }
+        input, select, textarea {
+            width: calc(100% - 190px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            background: #28a745;
+            color: #fff; 
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            color: green;
+            text-align: center;
+        }
+        .home-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 60px;
+        }
+        .home-button:hover {
+            background: #0056b3;
+        }
+        .home-icon {
+            margin-right: 8px;
+        }
+    </style>
+    <script>
+        function submitForm(event) {
+            event.preventDefault(); let email = prompt("Enter your email to receive the code:");
+        if (!email) {
+            alert("Email is required to receive the nomination code.");
+            return;
+        }
+
+        let uniqueCode = "NOM" + Math.floor(100000 + Math.random() * 900000); 
+
+        let formData = new FormData(document.getElementById("nominationForm"));
+        formData.append("email", email);
+        formData.append("nomination_code", uniqueCode);
+
+        fetch("send_code.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("message").innerText = "A code has been sent to your email.";
+            document.getElementById("nominationForm").reset();
+        })
+        .catch(error => console.error("Error:", error));
+    }
+</script>
+
+</head>
+<body>
+    
+    
+    <div class="container">
+    <h2>Nomination Submission</h2>
+    <form id="nominationForm" enctype="multipart/form-data" onsubmit="submitForm(event)"><div class="form-group">
+        <label for="name">Candidate Name:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+
+    <div class="form-group">
+        <label for="position">Position:</label>
+        <select id="position" name="position" required>
+            <option value="">Select Position</option>
+            <option value="REP1">CLASS REP</option>
+            
+           
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="admission_number">Admission Number:</label>
+        <input type="text" id="admission_number" name="admission_number" required>
+    </div>
+
+    <div class="form-group">
+        <label for="current year">Current Year:</label>
+        <select id="current_year" name="current_year" required>
+            <option value="">Select Year</option>
+            <option value="first">First Year</option>
+            <option value="second">Second Year</option>
+            <option value="third">Third Year</option>
+            <option value="fourth">Fourth Year</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="department">Department:</label>
+        <select id="department" name="department" required>
+            <option value="">Select Department</option>
+            <option value="civil">Civil Engineering</option>
+            <option value="cs">Computer Science Engineering</option>
+            <option value="eee">Electrical and Electronics Engineering</option>
+            <option value="ec">Electronics and Communication Engineering</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="class">class:</label>
+        <select id="class" name="class" required>
+            <option value="">Select</option>
+            <option value="yes">A</option>
+            <option value="no">B</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="back_paper">Any Back Papers?:</label>
+        <select id="back_paper" name="back_paper" required>
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+    </div>
+
+    <button type="submit">Submit Nomination</button>
+</form>
+<p id="message"></p>
+
+
+</div></body>
+</html>

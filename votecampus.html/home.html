@@ -3,180 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to VoteCampus</title>
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            
-            background-image: url('https://electionbuddy.com/wp-content/uploads/2023/06/What-Is-Mobile-Voting.jpeg'); /* Add your image URL here */
-            background-size: cover;
-            background-position: center;
-            text-align: center;
-            color: #fff;
-            float:right
-        }
-
-        .container {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 700px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 32px;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        p {
-            font-size: 18px;
-            line-height: 1.5;
-            margin-bottom: 10px;
-        }
-
-        .login-container {
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .form-group label {
-            font-size: 14px;
-            color: #333;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            margin-bottom: 15px;
-            color: #007bff;
-        }
-
-        .remember-me input {
-            margin-right: 5px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #28a745;
-            color: #fff;
+        .form-control, .form-select {
             border: none;
-            border-radius: 5px;
+            border-bottom: 2px solid rgb(139 139 139);
+            border-radius: 0;
+            box-shadow: none !important;
+            padding: 10px;
+            transition: border-bottom 0.3s ease-in-out;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-bottom: 2px solid #D35400;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-custom {
+            background-color: #D35400;
+            border: none;
+            padding: 8px;
             font-size: 16px;
-            cursor: pointer;
+            color: white;
         }
 
-        .btn:hover {
-            background-color: #218838;
+        .btn-custom:hover {
+            background-color: #B94600;
+            color: white;
         }
 
-        .form-links {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-
-        .form-links a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .form-links a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                width: 90%;
-            }
-            .container {
-                width: 95%;
-                padding: 20px;
-            }
-            .form-links {
-                flex-direction: column;
-                align-items: center;
-                gap: 5px;
-            }
+        /* Toast positioning */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
         }
     </style>
-    <script>
-        function handleLogin(event) {
-            event.preventDefault();  // Prevent the form from submitting immediately
-
-            var username = document.getElementById('username').value;
-
-            if (username.startsWith('KGR')) {
-                window.location.href = 'studentportal.html';
-            } else if (username.startsWith('AD')) {
-                window.location.href = 'admin.html';
-            } else if (username.startsWith('FY')) {
-                window.location.href = 'faculty.html';
-            } else {
-                alert('Invalid username. Please ensure it starts with the correct prefix.');
-            }
-        }
-    </script>
 </head>
-<body>
-
-    <h1>Welcome to VoteCampus</h1>
-    <p>Your trusted online voting platform for secure and transparent elections.</p>
-
-    <div class="login-container">
-        <h2>Login </h2>
-        <form onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+<body class="bg-white">
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="row w-100 align-items-center flex-column-reverse flex-md-row">
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <img class="img-fluid w-75" src="../Images/4529340.jpg" alt="Brand Logo">
             </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <div>
+                        <h3 style="color:rgb(26, 46, 53)"><b>LOG <span style="color:rgb(255, 115, 92)">IN</b></span></h3>
+                        <p class="text-muted">Please Log In using the details!</p>
+                    </div>
+                    <form class="form mt-3" id="login-form">
+                        <div class="mb-3">
+                            <label for="student-email" class="form-label">Email</label>
+                            <input id="student-email" type="email" class="form-control" placeholder="Enter email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pass-first" class="form-label">Password</label>
+                            <input id="pass-first" type="password" class="form-control" placeholder="Enter password" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Log in</button>
+                        <p class="text-center mt-2">Haven't created an account yet?</p>
+                        <a href="./signup.html" class="btn btn-custom w-100">Sign Up</a>
+                        <p id="error-message" class="text-danger text-center mt-2"></p>
+                    </form>
+                </div>
             </div>
-
-            
-            <button type="submit" class="btn">Login</button>
-        </form>
-        
-        <div class="form-links">
-            <a href="forgot.html">Forgot Password?</a>
-            <a href="signup.html">Sign Up?</a>
         </div>
     </div>
 
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const email = document.getElementById("student-email").value;
+            const password = document.getElementById("pass-first").value;
+            const errorMessage = document.getElementById("error-message");
+
+            try {
+                const response = await fetch("http://localhost:3000/api/user/add/login-user", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ userEmail: email, password: password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "Login failed. Please check your credentials.");
+                }
+
+                // Save user data in localStorage
+                if (data.token) {
+                    localStorage.setItem("authToken", data.token);
+                }
+
+                showToast("Login Successful!", "success");
+
+                // Redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 2000);
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                showToast(error.message, "danger");
+            }
+        });
+
+        // Function to show Bootstrap toast
+        function showToast(message, type) {
+            const toastContainer = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.className = `toast align-items-center text-bg-${type} border-0 show`;
+            toast.setAttribute("role", "alert");
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Auto remove toast after 3 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

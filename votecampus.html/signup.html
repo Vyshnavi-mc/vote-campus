@@ -3,89 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up | E-Voting System</title>
+    <title>Sign Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-        .signup-container {
-            background: rgb(24, 115, 131);
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 350px;
-        }
-        h2 {
-            margin-bottom: 20px;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .error-message {
-            color: red;
-            font-size: 14px;
-            display: none;
-            margin-bottom: 10px;
-        }
-        button {
-            background: #28a745;
-            color: white;
-            padding: 10px;
+        .form-control, .form-select {
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
+            border-bottom: 2px solid rgb(139 139 139);
+            border-radius: 0;
+            box-shadow: none !important;
+            padding: 10px;
+            transition: border-bottom 0.3s ease-in-out;
         }
-        button:hover {
-            background: #218838;
+
+        .form-control:focus, .form-select:focus {
+            border-bottom: 2px solid #D35400;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .btn-custom {
+            background-color: #D35400;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+        }
+
+        .btn-custom:hover {
+            background-color: #B94600;
+            color: white;
         }
     </style>
+</head>
+<body class="bg-white">
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="row w-100 align-items-center flex-column-reverse flex-md-row">
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <img class="img-fluid w-75" src="../Images/vote campus signup.png" alt="Brand Logo">
+            </div>
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 style="color:rgb(26, 46, 53)"><b>SIGN <span style="color:rgb(255, 115, 92)">UP</b></span></h3>
+                        <a href="./home.html" class="btn btn-outline-secondary btn-sm">Back to Login</a>
+                    </div>
+                    <p class="text-muted">Please enter the details to create an account!</p>
+                    <form class="form mt-3">
+                        <div class="mb-3">
+                            <label for="student-fullName" class="form-label">Full Name</label>
+                            <input id="student-fullName" type="text" class="form-control" placeholder="Ex: Flower Rope Induhotten">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="voting-role" class="form-label">Sign up as</label>
+                                <select id="voting-role" class="form-select" onchange="toggleFields()">
+                                    <option selected disabled>Choose role...</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Faculty">Faculty</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="student-department" class="form-label">Department</label>
+                                <select id="student-department" class="form-select"></select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 hidden" id="student-fields">
+                            <div class="col-md-6" id="admission-number-div">
+                                <label for="student-adm-no" class="form-label">Admission Number</label>
+                                <input id="student-adm-no" type="text" class="form-control" placeholder="Ex: 19/217/EC/KGR">
+                            </div>
+                            <div class="col-md-6" id="batch-year-div">
+                                <label for="batch-year" class="form-label">Batch (Year)</label>
+                                <select id="batch-year" class="form-select"></select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4 hidden" id="isTutor-div">
+                                <label for="is-tutor" class="form-label">Is Tutor?</label>
+                                <select id="is-tutor" class="form-select" onchange="toggleTutorFields()">
+                                    <option selected disabled>Choose...</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 hidden" id="secret-code-div">
+                                <label for="secret-code" class="form-label">Enter code</label>
+                                <input class="form-control" type="text" placeholder="Enter code">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="student-email" class="form-label">Email</label>
+                            <input id="student-email" type="email" class="form-control" placeholder="Enter email">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="pass-first" class="form-label">Password</label>
+                                <input id="pass-first" type="password" class="form-control" placeholder="Enter password">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="re-pass-first" class="form-label">Confirm Password</label>
+                                <input id="re-pass-first" type="password" class="form-control" placeholder="Re-enter password">
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-custom mt-2">Sign Up</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery and Select2 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+    
     <script>
-        function validateForm(event) {
-            event.preventDefault();
-            var password = document.querySelector('input[name="password"]').value;
-            var confirmPassword = document.querySelector('input[name="confirm_password"]').value;
-            var errorMessage = document.getElementById('error-message');
-            
-            if (password !== confirmPassword) {
-                errorMessage.style.display = 'block';
-                return false;
-            } else {
-                errorMessage.style.display = 'none';
-                window.location.href = 'home.html';
+        // Function to toggle visibility of form fields based on role selection
+        function toggleFields() {
+            let role = document.getElementById("voting-role").value;
+            let studentFields = document.getElementById("student-fields");
+            let isTutorDiv = document.getElementById("isTutor-div");
+            let secretCodeDiv = document.getElementById("secret-code-div");
+
+            studentFields.classList.add("hidden");
+            isTutorDiv.classList.add("hidden");
+            secretCodeDiv.classList.add("hidden");
+
+            if (role === "Student") {
+                studentFields.classList.remove("hidden");
+            } else if (role === "Faculty") {
+                isTutorDiv.classList.remove("hidden");
+            } else if (role === "Admin") {
+                secretCodeDiv.classList.remove("hidden");
             }
         }
+
+        function toggleTutorFields() {
+            let isTutor = document.getElementById("is-tutor").value;
+            let batchYearDiv = document.getElementById("batch-year-div");
+            let secretCodeDiv = document.getElementById("secret-code-div");
+            let admissionNumberDiv = document.getElementById("admission-number-div");
+
+            batchYearDiv.classList.add("hidden");
+            secretCodeDiv.classList.add("hidden");
+            admissionNumberDiv.classList.add("hidden");
+
+            if (isTutor === "Yes") {
+                batchYearDiv.classList.remove("hidden");
+                secretCodeDiv.classList.remove("hidden");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchDepartments);
+    
+        // Function to fetch departments from API and populate the dropdown
+        async function fetchDepartments() {
+            try {
+                const response = await fetch("http://localhost:3000/api/department/get-department");
+                const data = await response.json();
+                const departmentDropdown = document.getElementById("student-department");
+                departmentDropdown.innerHTML = `<option selected disabled>Choose department...</option>`;
+    
+                data.forEach(dept => {
+                    let option = document.createElement("option");
+                    option.value = dept._id;  // Use _id for reference
+                    option.textContent = dept.departmentShortName;
+                    departmentDropdown.appendChild(option);
+                });
+    
+                // Attach event listener for batch fetching when department is selected
+                departmentDropdown.addEventListener("change", fetchBatches);
+    
+            } catch (error) {
+                console.error("Error fetching departments:", error);
+            }
+        }
+    
+        // Function to fetch batches based on selected department
+        async function fetchBatches() {
+            const departmentDropdown = document.getElementById("student-department");
+            const batchDropdown = document.getElementById("batch-year");
+            const selectedDeptId = departmentDropdown.value;  // Get selected department _id
+    
+            if (!selectedDeptId) {
+                batchDropdown.innerHTML = `<option selected disabled>Select year...</option>`;
+                return;
+            }
+    
+            try {
+                const response = await fetch("http://localhost:3000/api/batch/get-batch", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ departmentRef: selectedDeptId })
+                });
+    
+                const data = await response.json();
+                batchDropdown.innerHTML = `<option selected disabled>Select year...</option>`;
+    
+                data.forEach(batch => {
+                    let option = document.createElement("option");
+                    option.value = batch._id;
+                    option.textContent = batch.batchName;
+                    batchDropdown.appendChild(option);
+                });
+    
+            } catch (error) {
+                console.error("Error fetching batches:", error);
+            }
+        }
+    
+        // Load departments when page loads
+        document.addEventListener("DOMContentLoaded", fetchDepartments);
+
+
+        document.querySelector("form").addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const userFullName = document.getElementById("student-fullName").value;
+    const userEmail = document.getElementById("student-email").value;
+    const signUpRole = document.getElementById("voting-role").value;
+    const departmentRef = document.getElementById("student-department").value;
+    const studentAdmissionNumber = document.getElementById("student-adm-no")?.value || "";
+    const batchRef = document.getElementById("batch-year").value || "";
+    const password = document.getElementById("pass-first").value;
+    const confirmPassword = document.getElementById("re-pass-first").value;
+    const secretCode = document.getElementById("secret-code-div").classList.contains("hidden")
+        ? "" : document.querySelector("#secret-code-div input").value;
+
+    if (password !== confirmPassword) {
+        showToast("Passwords do not match!", "error");
+        return;
+    }
+    
+
+    const requestBody = {
+        userFullName, userEmail, signUpRole, departmentRef, studentAdmissionNumber, batchRef, password, secretCode
+        };
+
+        try {
+            const response = await fetch("http://localhost:3000/api/user/add/add-user", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(requestBody)
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                showToast("User registered successfully!", "success");
+                setTimeout(() => {
+                    window.location.href = "home.html"; // Redirect to login page
+                }, 2000);
+            } else {
+                showToast(data.error || "Something went wrong!", "error");
+            }
+        } catch (error) {
+            console.error("Signup error:", error);
+            showToast("Error connecting to server!", "error");
+        }
+    });
+
+    // Toastify function
+    function showToast(message, type) {
+        Toastify({
+            text: message,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            backgroundColor: type === "success" ? "#28a745" : "#dc3545",
+            stopOnFocus: true,
+        }).showToast();
+    }
+
+
     </script>
-</head>
-<body>
-    <div class="signup-container">
-        <h2>Sign Up for E-Voting</h2>
-        <form onsubmit="validateForm(event)">
-            <input type="text" name="full_name" placeholder="Enter Full Name" required>
-            <input type="text" name="username" placeholder="Enter Username" required>
-            <select name="role" required>
-                <option value="" disabled selected>Select Role</option>
-                <option value="Student">Student</option>
-                <option value="Faculty">Faculty</option>
-                <option value="Admin">Admin</option>
-            </select>
-            <input type="email" name="email" placeholder="Enter Email" required>
-            <input type="password" name="password" placeholder="Create Password" required>
-            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
-            <p id="error-message" class="error-message">Mismatch password</p>
-            <button type="submit">Sign Up</button>
-        </form>
-    </div>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 </body>
 </html>

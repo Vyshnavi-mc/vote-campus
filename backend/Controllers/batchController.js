@@ -26,6 +26,15 @@ const getBatch = async (req, res) => {
     }
 };
 
+const getAllBatch = async(req,res)=>{
+    try{
+        const result = await batchModel.find({});
+        return res.status(200).json(result);
+    }catch(err){
+        res.status(500).json({ error: err.message });
+    }
+}
 
 
-module.exports={insertBatch, getBatch}
+
+module.exports={insertBatch, getBatch, getAllBatch}

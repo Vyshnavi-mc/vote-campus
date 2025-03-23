@@ -37,11 +37,12 @@
 
         /* Toast positioning */
         #toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1050;
+            position: fixed; /* Ensures it stays in place even when scrolling */
+            top: 20px;      /* 20px from the top */
+            right: 0;       /* Aligns to the right edge */
+            z-index: 1050;  /* Keeps it above other elements */
         }
+
     </style>
 </head>
 <body class="bg-white">
@@ -103,14 +104,15 @@
 
                 // Save user data in localStorage
                 if (data.token) {
-                    localStorage.setItem("authToken", data.token);
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("role", data.userRole);
                 }
 
                 showToast("Login Successful!", "success");
 
                 // Redirect after 2 seconds
-                setTimeout(() => {
-                    window.location.href = "dashboard.html";
+                setTimeout(() => { // Store role
+                    redirectUser(data.userRole);
                 }, 2000);
             } catch (error) {
                 errorMessage.textContent = error.message;
@@ -118,6 +120,23 @@
             }
         });
 
+        function redirectUser(role) {
+            switch (role) {
+                case "Admin":
+                    window.location.href = "./admin.html";
+                    break;
+                case "Faculty":
+                    window.location.href = "./faculty.html";
+                    break;
+                case "Student":
+                    window.location.href = "./student.html";
+                    break;
+                default:
+                    window.location.href = "error404.html"; 
+            }
+        }
+
+       
         // Function to show Bootstrap toast
         function showToast(message, type) {
             const toastContainer = document.getElementById("toast-container");

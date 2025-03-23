@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const { departmentRouter } = require('./Routes/departmentRouter');
 const {batchRouter} = require('./Routes/batchRouter');
 const {userRouter} = require('./Routes/userRouter');
+const {electionRouter} = require('./Routes/electionRouter');
 
 const dotenv = require('dotenv').config()
 
@@ -14,8 +15,9 @@ app.use(cors());
 app.use("/api/department",departmentRouter);
 app.use("/api/batch",batchRouter);
 app.use("/api/user/add",userRouter);
+app.use("/api/election",electionRouter);
 
-const PORT  = 3000 || process.env.PORT;
+const PORT  = process.env.PORT || 3000;
 
 mongoose.connect(process.env.MONGO_URL)
 .then(()=>console.log('connected to Mongo DB'))

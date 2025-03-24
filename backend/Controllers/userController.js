@@ -34,7 +34,6 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ error: "Email already registered" });
         }
 
-        // ✅ Ensure departmentRef is a valid ObjectId
         let departmentId = departmentRef;
         if (!ObjectId.isValid(departmentRef)) {
             return res.status(400).json({ error: "Invalid department reference" });
@@ -42,7 +41,6 @@ const registerUser = async (req, res) => {
             departmentId = new ObjectId(departmentRef);
         }
 
-        // ✅ Ensure batchRef is a valid ObjectId (Only if provided)
         let batchId = batchRef;
         if (batchRef && batchRef !== "Select year...") {
             if (!ObjectId.isValid(batchRef)) {
@@ -50,7 +48,7 @@ const registerUser = async (req, res) => {
             }
             batchId = new ObjectId(batchRef);
         } else {
-            batchId = null; // Optional batchRef can be set to null
+            batchId = null;
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -62,7 +60,7 @@ const registerUser = async (req, res) => {
             signUpRole,
             departmentRef: departmentId,
             studentAdmissionNumber,
-            batchRef: batchId, // ✅ Ensure ObjectId or null
+            batchRef: batchId, 
             secretCode
         });
 
@@ -78,11 +76,6 @@ const registerUser = async (req, res) => {
 
 const userLogin = async (req, res) => {
     const { userEmail, password } = req.body;
-    
-    console.log("Received Login Request:");
-    console.log("Email:", userEmail);
-    console.log("Password:", password);
-
     try {
         // Find a single user instead of an array
         const user = await userModel.findOne({ userEmail : userEmail });
@@ -109,10 +102,10 @@ const userLogin = async (req, res) => {
 
         console.log("Password matched. Generating token...");
         // Generate JWT token
-        const token = jwt.sign({ id: user._id }, "secret", { expiresIn: "1h" });
+        const token = jwt.sign({ id: user._id, role:user.signUpRole }, "secret", { expiresIn: "1h" });
 
         console.log("Login successful.");
-        return res.status(200).json({ token, userID: user._id });
+        return res.status(200).json({ token, userID: user._id, userRole : user.signUpRole });
 
     } catch (error) {
         console.error("Login Error:", error.message);
@@ -122,6 +115,15 @@ const userLogin = async (req, res) => {
     }
 };
 
+    const getAllFaculty = async(req,res)=>{
+        try{
+            const result = await userModel.find({signUpRole:'Faculty'});
+            return res.status(200).json(result);
+        }catch(err){
+            res.status(500).json({ error: err.message });
+        }
+    }
 
 
-  module.exports={registerUser, userLogin}
+
+  module.exports={registerUser, userLogin, getAllFaculty}

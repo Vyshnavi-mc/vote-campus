@@ -3837,11 +3837,11 @@
                     const data = await response.json();
 
                     if (response.ok) {
-                        document.getElementById('electionId').value = data._id; // Set hidden ID
+                        document.getElementById('electionId').value = data._id; 
                         document.getElementById('electionName').value = data.electionName;
                         document.getElementById('electionRole').value = data.electionRole;
-                        document.getElementById('electionBatch').value = data.electionBatch?._id || ''; // Batch ID
-                        document.getElementById('electionDuty').value = data.electionDuty?._id || '';   // Duty/User ID
+                        document.getElementById('electionBatch').value = data.electionBatch?._id || ''; 
+                        document.getElementById('electionDuty').value = data.electionDuty?._id || ''; 
 
                         document.getElementById('fromDate').value = formatDateForInput(data.electionFrom);
                         document.getElementById('toDate').value = formatDateForInput(data.electionTo);

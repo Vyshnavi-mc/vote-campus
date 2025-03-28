@@ -124,6 +124,37 @@ const userLogin = async (req, res) => {
         }
     }
 
+    const fetchAllVoters = async (req, res) => {
+        try {
+            const { userFullName, departmentRef, batchRef } = req.query;
+            let query = {};
+            query.signUpRole = 'Student';
+            // Apply filters only if they are provided
+            if (userFullName) {
+                query.userFullName = { $regex: userFullName, $options: "i" }; // Case-insensitive partial match
+            }
+            if (departmentRef) {
+                query.departmentRef = departmentRef; // Match ObjectId for department
+            }
+            if (batchRef) {
+                query.batchRef = batchRef; // Match ObjectId for batch
+            }
+    
+            // Fetch users based on query and populate department and batch
+            const result = await userModel
+                .find(query)
+                .populate("departmentRef", "departmentShortName") // Show department name
+                .populate("batchRef", "batchYear"); // Show batch year
+    
+            // Send the filtered data
+            return res.status(200).json(result);
+        } catch (err) {
+            console.error("Error fetching voters:", err.message);
+            res.status(500).json({ error: err.message });
+        }
+    };
+    
 
 
-  module.exports={registerUser, userLogin, getAllFaculty}
+
+  module.exports={registerUser, userLogin, getAllFaculty, fetchAllVoters}

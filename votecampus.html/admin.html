@@ -2254,10 +2254,72 @@
             flex: 1;
         }
 
+        /* Settings tabs */
+        .settings-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--gray-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .settings-tab {
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-weight: 500;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color var(--transition-fast);
+            position: relative;
+        }
+
+        .settings-tab.active {
+            color: var(--secondary);
+        }
+
+        .settings-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--secondary);
+        }
+
+        .settings-tab-content {
+            display: none;
+            animation: fadeIn var(--transition-normal);
+        }
+
+        .settings-tab-content.active {
+            display: block;
+        }
+
+        .context-menu {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        list-style-type: none;
+        padding: 5px 0;
+        margin: 0;
+        z-index: 1000;
+        width: 150px;
+    }
+    .context-menu li {
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+    .context-menu li:hover {
+        background-color: #f2f2f2;
+    }
 
     </style>
 </head>
 <body>
+    <ul id="context-menu" class="context-menu">
+        <li onclick="banVoter()">🚫 Ban Voter</li>
+        <li onclick="disableUser()">🔒 Disable User</li>
+    </ul>
     <!-- Mobile menu toggle -->
     <button class="mobile-toggle" id="mobileToggle">
         <i class="fas fa-bars"></i>
@@ -2445,6 +2507,12 @@
                         </div>
                         <div class="menu-text">Publish Result</div>
                     </div>
+                    <div class="menu-item" data-page="faculty">
+                        <div class="menu-icon">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <div class="menu-text">Faculty Management</div>
+                    </div>
                 </div>
                 <div class="menu-section">
                     <div class="menu-section-title">Settings</div>
@@ -2472,7 +2540,7 @@
                         <div class="user-role">Administrator</div>
                     </div>
                     <div class="user-dropdown-toggle">
-                        <i class="fas fa-chevron-up"></i>
+                        <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
                 <!-- User Dropdown Menu -->
@@ -2483,7 +2551,7 @@
                         </div>
                         <div class="user-dropdown-info">
                             <div class="user-dropdown-name">John Doe</div>
-                            <div class="user-dropdown-email">john.doe@example.com</div>
+                            <div class="user-dropdown-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2d47424543034942486d48554c405d4148034e4240">[email&#160;protected]</a></div>
                         </div>
                     </div>
                     <ul class="user-dropdown-menu">
@@ -2500,7 +2568,7 @@
                             </a>
                         </li>
                         <li class="user-dropdown-item">
-                            <a href="#" class="user-dropdown-link">
+                            <a href="#" class="user-dropdown-link" id="accountSettings">
                                 <i class="fas fa-cog user-dropdown-icon"></i>
                                 Account Settings
                             </a>
@@ -2623,7 +2691,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <tr>
+                            <tr>
                                 <td>
                                     <div class="project-name">CS Year 3 : Class Rep</div>
                                 </td>
@@ -2632,11 +2700,11 @@
                                 </td>
                                 <td>
                                     <div class="project-members">
-                                        <div class="member-avatar">JD</div> -->
+                                        <div class="member-avatar">JD</div> 
                                         <!-- <div class="member-avatar">AM</div>
                                         <div class="member-avatar">RK</div>
                                         <div class="member-count">+2</div> -->
-                                    <!-- </div>
+                                     </div>
                                 </td>
                                 <td>
                                     <div class="project-actions">
@@ -2649,7 +2717,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td>
                                     <div class="project-name">ECE Year 3 : Class Rep</div>
                                 </td>
@@ -2880,10 +2948,213 @@
                         </button>
                     </div>
                 </div>
-                <div class="placeholder-content">
-                    <i class="fas fa-cog placeholder-icon"></i>
-                    <h3>Settings Content</h3>
-                    <p>This is the settings page content. You can customize this section with your own settings.</p>
+                
+                <!-- Settings Tabs -->
+                <div class="settings-tabs">
+                    <div class="settings-tab active" data-tab="general">General</div>
+                    <div class="settings-tab" data-tab="department">Department Master</div>
+                    <div class="settings-tab" data-tab="batch">Batch Master</div>
+                </div>
+                
+                <!-- General Settings Tab Content -->
+                <div class="settings-tab-content active" id="generalSettings">
+                    <div class="placeholder-content">
+                        <i class="fas fa-cog placeholder-icon"></i>
+                        <h3>General Settings</h3>
+                        <p>Configure your general application settings here.</p>
+                    </div>
+                </div>
+                
+                <!-- Department Master Tab Content -->
+                <div class="settings-tab-content" id="departmentSettings">
+                    <div class="projects-card">
+                        <div class="projects-header">
+                            <h3 class="projects-title">Department Management</h3>
+                            <button class="create-election-btn" id="createDepartmentBtn">
+                                <i class="fas fa-plus"></i>
+                                <span>Add Department</span>
+                            </button>
+                        </div>
+                        <table class="projects-table">
+                            <thead>
+                                <tr>
+                                    <th>Department Name</th>
+                                    <th>Department Code</th>
+                                    <th>Created Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Computer Science</td>
+                                    <td>CS</td>
+                                    <td>01/01/2023</td>
+                                    <td><span class="project-status status-completed">Active</span></td>
+                                    <td>
+                                        <div class="project-actions">
+                                            <button class="project-action">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="project-action">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Electronics & Communication</td>
+                                    <td>ECE</td>
+                                    <td>01/02/2023</td>
+                                    <td><span class="project-status status-completed">Active</span></td>
+                                    <td>
+                                        <div class="project-actions">
+                                            <button class="project-action">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="project-action">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Batch Master Tab Content -->
+                <div class="settings-tab-content" id="batchSettings">
+                    <div class="projects-card">
+                        <div class="projects-header">
+                            <h3 class="projects-title">Batch Management</h3>
+                            <button class="create-election-btn" id="createBatchBtn">
+                                <i class="fas fa-plus"></i>
+                                <span>Add Batch</span>
+                            </button>
+                        </div>
+                        <table class="projects-table">
+                            <thead>
+                                <tr>
+                                    <th>Batch Name</th>
+                                    <th>Department</th>
+                                    <th>Year</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CS-A 2023</td>
+                                    <td>Computer Science</td>
+                                    <td>1</td>
+                                    <td><span class="project-status status-completed">Active</span></td>
+                                    <td>
+                                        <div class="project-actions">
+                                            <button class="project-action">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="project-action">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ECE-B 2023</td>
+                                    <td>Electronics & Communication</td>
+                                    <td>2</td>
+                                    <td><span class="project-status status-completed">Active</span></td>
+                                    <td>
+                                        <div class="project-actions">
+                                            <button class="project-action">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="project-action">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Faculty Management Page -->
+            <div class="content-page" id="faculty">
+                <div class="header">
+                    <h1 class="page-title">Faculty Management</h1>
+                    <div class="header-actions">
+                        <button class="create-election-btn" id="createFacultyBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Faculty</span>
+                        </button>
+                        <button class="theme-toggle" id="themeToggleFaculty">
+                            <i class="fas fa-sun"></i>
+                            <span class="theme-text">Light</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="projects-card">
+                    <div class="projects-header">
+                        <h3 class="projects-title">Faculty List</h3>
+                    </div>
+                    <table class="projects-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dr. Jane Smith</td>
+                                <td>Computer Science</td>
+                                <td>jane.smith@example.com</td>
+                                <td>+1 234-567-8901</td>
+                                <td><span class="project-status status-completed">Active</span></td>
+                                <td>
+                                    <div class="project-actions">
+                                        <button class="project-action">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="project-action">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="project-action">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Prof. Robert Johnson</td>
+                                <td>Electronics & Communication</td>
+                                <td>robert.johnson@example.com</td>
+                                <td>+1 234-567-8902</td>
+                                <td><span class="project-status status-completed">Active</span></td>
+                                <td>
+                                    <div class="project-actions">
+                                        <button class="project-action">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="project-action">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="project-action">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             
@@ -3016,9 +3287,38 @@
                     </div>
                 </div>
                 <div class="placeholder-content">
-                    <i class="fas fa-tasks placeholder-icon"></i>
-                    <h3>Voter's List Content</h3>
-                    <p>This is the voter's list page content. You can customize this section with your own voter data.</p>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <input type="text" id="filter-username" class="form-control" placeholder="Search by name">
+                        </div>
+                        <div class="col-md-3">
+                            <select id="filter-department" class="form-control">
+                                <option value="">Filter by Department</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="filter-batch" class="form-control">
+                                <option value="">Filter by Batch</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary" onclick="applyFilters()">Search</button>
+                        </div>
+                    </div>
+                    <table class="voter-list-table table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Admission Number</th>
+                                <th>Department</th>
+                                <th>Batch</th>
+                            </tr>
+                        </thead>
+                        <tbody id="voterTableBody">
+                            <!-- Data will be dynamically loaded here -->
+                        </tbody>
+                    </table>
+                    
                 </div>
             </div>
             
@@ -3046,6 +3346,7 @@
     </div>
      <!-- Toast Notifications -->
      <div id="toast-container"></div>
+     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
      <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -3105,7 +3406,7 @@
             getAllFaculty();
             getAllElection();
             getmanageAllElection();
-            getElectionToday();
+            // getElectionToday();
 
             // Menu functionality
             const menuItems = document.querySelectorAll('.menu-item');
@@ -3126,6 +3427,8 @@
             const electionTabContents = document.querySelectorAll('.election-tab-content');
             const createElectionBtn = document.getElementById('createElectionBtn');
             const electionForm = document.getElementById('electionForm');
+            const settingsTabs = document.querySelectorAll('.settings-tab');
+            const settingsTabContents = document.querySelectorAll('.settings-tab-content');
 
              // User Profile Dropdown
             const userProfile = document.getElementById('userProfile');
@@ -3135,6 +3438,7 @@
             // Profile Modal
             const editProfile = document.getElementById('editProfile');
             const viewProfile = document.getElementById('viewProfile');
+            const accountSettings = document.getElementById('accountSettings');
             const profileModal = document.getElementById('profileModal');
             const closeProfileModal = document.getElementById('closeProfileModal');
             const cancelProfileEdit = document.getElementById('cancelProfileEdit');
@@ -3144,30 +3448,30 @@
 
             // Toggle user dropdown
             userProfile.addEventListener('click', function (e) {
-        e.stopPropagation();
-        userDropdown.classList.toggle('active');
+                e.stopPropagation();
+                userDropdown.classList.toggle('active');
 
-        // Get the icon inside the toggle
-        const dropdownIcon = userDropdownToggle.querySelector('i');
+                // Get the icon inside the toggle
+                const dropdownIcon = userDropdownToggle.querySelector('i');
 
-        // Toggle icon between up and down
-        if (userDropdown.classList.contains('active')) {
-            dropdownIcon.className = 'fas fa-chevron-up';
-        } else {
-            dropdownIcon.className = 'fas fa-chevron-down';
-        }
-    });
+                // Toggle icon between up and down
+                if (userDropdown.classList.contains('active')) {
+                    dropdownIcon.className = 'fas fa-chevron-up';
+                } else {
+                    dropdownIcon.className = 'fas fa-chevron-down';
+                }
+            });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function (e) {
-        if (!userProfile.contains(e.target) && !userDropdown.contains(e.target)) {
-            userDropdown.classList.remove('active');
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!userProfile.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.classList.remove('active');
 
-            // Reset icon when dropdown is closed
-            const dropdownIcon = userDropdownToggle.querySelector('i');
-            dropdownIcon.className = 'fas fa-chevron-down';
-        }
-    });
+                    // Reset icon when dropdown is closed
+                    const dropdownIcon = userDropdownToggle.querySelector('i');
+                    dropdownIcon.className = 'fas fa-chevron-down';
+                }
+            });
             
             // Open profile modal
             editProfile.addEventListener('click', function() {
@@ -3180,6 +3484,29 @@
                 userDropdown.classList.remove('active');
             });
             
+            // Open settings page when clicking on Account Settings
+            accountSettings.addEventListener('click', function() {
+                // Switch to settings page
+                menuItems.forEach(i => i.classList.remove('active'));
+                document.querySelector('.menu-item[data-page="settings"]').classList.add('active');
+                
+                // Show settings page
+                contentPages.forEach(page => {
+                    page.classList.remove('active');
+                    if (page.id === 'settings') {
+                        page.classList.add('active');
+                    }
+                });
+                
+                userDropdown.classList.remove('active');
+                
+                // Close sidebar on mobile after selection
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            });
+            
             // Close profile modal
             closeProfileModal.addEventListener('click', function() {
                 profileModal.classList.remove('active');
@@ -3188,10 +3515,23 @@
             
             // Logout functionality
             logoutButton.addEventListener('click', function() {
-                // In a real application, this would redirect to a logout endpoint
-                alert('You have been logged out successfully!');
-                // Simulate redirect to login page
-                // window.location.href = '/login';
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You will be logged out of the system",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#e67e22",
+                    cancelButtonColor: "#6c757d",
+                    confirmButtonText: "Yes, log me out!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        showToast('You have been logged out successfully!', 'success');
+                        // In a real application, this would redirect to a logout endpoint
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 1500);
+                    }
+                });
             });
             
             // Toggle sidebar on mobile
@@ -3204,7 +3544,7 @@
             overlay.addEventListener('click', function() {
                 sidebar.classList.remove('active');
                 notificationsPanel.classList.remove('active');
-                profileDropdown.classList.remove('show');
+                userDropdown.classList.remove('active');
                 profileModal.classList.remove('active');
                 overlay.classList.remove('active');
             });
@@ -3267,12 +3607,14 @@
                 
                 // Update UI
                 document.querySelector('.user-name').textContent = name;
+                document.querySelector('.user-dropdown-name').textContent = name;
                 
                 // Show success message
-                alert('Profile saved successfully!');
+                showToast('Profile saved successfully!', 'success');
                 profileModal.classList.remove('active');
                 overlay.classList.remove('active');
             });
+            
             // Toggle dark/light theme
             themeToggles.forEach(toggle => {
                 toggle.addEventListener('click', function() {
@@ -3328,6 +3670,24 @@
                     electionTabContents.forEach(content => {
                         content.classList.remove('active');
                         if (content.id === tabId + 'ElectionTab') {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Settings tabs
+            settingsTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Update active tab
+                    settingsTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    const tabId = this.getAttribute('data-tab');
+                    settingsTabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId + 'Settings') {
                             content.classList.add('active');
                         }
                     });
@@ -3459,6 +3819,7 @@
                 
                 if (userName) {
                     document.querySelector('.user-name').textContent = userName;
+                    document.querySelector('.user-dropdown-name').textContent = userName;
                     document.getElementById('profileName').value = userName;
                 }
                 
@@ -3947,6 +4308,113 @@
                     console.error("Error fetching election data:", error);
                 }
             }
+
+            async function loadDropdowns() {
+        try {
+            // Fetch departments
+            const deptResponse = await fetch("http://localhost:3000/api/department/get-department");
+            const departments = await deptResponse.json();
+
+            // Fetch batches
+            const batchResponse = await fetch("http://localhost:3000/api/batch/get-all-batch");
+            const batches = await batchResponse.json();
+
+            populateDropdown("#filter-department", departments, "_id", "departmentShortName");
+            populateDropdown("#filter-batch", batches, "_id", "batchName");
+        } catch (error) {
+            console.error("Error loading dropdowns:", error);
+        }
+    }
+
+    // Populate Dropdown Options Dynamically
+    function populateDropdown(selector, items, valueKey, textKey) {
+        const dropdown = $(selector);
+        dropdown.empty().append('<option value="">Select...</option>');
+        items.forEach(item => {
+            dropdown.append(`<option value="${item[valueKey]}">${item[textKey]}</option>`);
+        });
+    }
+
+    // Apply Filters and Fetch Voter Data
+    async function applyFilters() {
+        const departmentRef = $("#filter-department").val();
+        const batchRef = $("#filter-batch").val();
+        const userNameFilter = $("#filter-username").val();
+
+        try {
+            // Construct the query string with filters
+            let url = `http://localhost:3000/api/user/add/get-all-voters?`;
+            if (userNameFilter) url += `userFullName=${userNameFilter}&`;
+            if (departmentRef) url += `departmentRef=${departmentRef}&`;
+            if (batchRef) url += `batchRef=${batchRef}&`;
+
+            // Fetch the filtered data
+            const response = await fetch(url);
+            const voters = await response.json();
+
+            // Populate the table with voter data
+            populateVoterTable(voters);
+        } catch (error) {
+            console.error("Error fetching voters:", error);
+        }
+    }
+
+    // Populate Voter Table Dynamically
+    function populateVoterTable(voters) {
+    const tableBody = $("#voterTableBody");
+    tableBody.empty();
+
+    if (voters.length === 0) {
+        tableBody.append("<tr><td colspan='4' class='text-center'>No records found</td></tr>");
+        return;
+    }
+
+    voters.forEach(voter => {
+        tableBody.append(`
+            <tr oncontextmenu="showContextMenu(event, '${voter._id}')">
+                <td>${voter.userFullName || "N/A"}</td>
+                <td>${voter.studentAdmissionNumber || "N/A"}</td>
+                <td>${voter.departmentRef?.departmentShortName || "N/A"}</td>
+                <td>${voter.batchRef?.batchYear || "N/A"}</td>
+            </tr>
+        `);
+    });
+}
+
+
+    // Initial Load - Fetch Dropdowns and Voter List
+    $(document).ready(() => {
+        loadDropdowns();  // Load Departments and Batches
+        applyFilters();  // Load all voters initially
+    });
+
+
+    /////////////////////////////////////////////////////////
+
+    let selectedVoterId = null;
+
+// Show context menu on right-click
+function showContextMenu(event, voterId) {
+    event.preventDefault(); // Prevent default right-click menu
+
+    selectedVoterId = voterId; // Store voter ID for further actions
+
+    // Show context menu at mouse position
+    $("#context-menu")
+        .css({
+            top: event.pageY + "px",
+            left: event.pageX + "px"
+        })
+        .show();
+
+    $(document).on("click", hideContextMenu); // Hide on left-click
+}
+
+// Hide context menu
+function hideContextMenu() {
+    $("#context-menu").hide();
+    $(document).off("click", hideContextMenu); // Unbind event
+}
 
 
 

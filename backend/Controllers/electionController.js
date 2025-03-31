@@ -131,6 +131,134 @@ const getElectionsOnCurrentDay = async (req,res) =>{
     }
 }
 
+const getFacultyAssignedElection = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const faculty = await electionModel.find({
+            electionDuty: id,
+            isDeleted:{$ne : true},
+            isFacultyAccepted:true
+        }).populate("electionDuty", "userFullName userEmail"); 
+
+        return res.status(200).json(faculty);
+    } catch (err) {
+        console.error("Error fetching faculty assigned elections:", err);
+        return res.status(500).json({ error: err.message });
+    }
+};
+
+const getApprovedElectionList = async (req,res) =>{
+    try{
+        const electionList = await electionModel.find({ isDeleted: { $ne: true },isFacultyAccepted:true })
+        .populate({
+            path: 'electionBatch',   // Populate batch to get batch details
+            select: 'batchName'     // Only get batchName if needed
+        })
+        .populate({
+            path: 'electionDuty',    // Populate electionDuty to get user details
+            select: 'userFullName'  // Only get userFullName if needed
+        });;
+        return res.status(200).json(electionList);
+
+    }catch(err){
+        res.status(500).json({ error: err.message });
+    }
+}
 
 
-module.exports={addElection, getAllElection, deleteElection, getSingleElection,getElectionsOnCurrentDay};
+const getFacultyApproveList = async (req,res) =>{
+    const {id} = req.params;
+    try{
+        const query = {
+            isDeleted: { $ne: true },
+            isFacultyAccepted: null
+        };
+    
+        if (id) {
+            query.electionDuty = id;
+        }
+    
+        const electionList = await electionModel.find(query)
+            .populate({
+                path: 'electionBatch',   // Populate batch to get batch details
+                select: 'batchName'     // Only get batchName if needed
+            })
+            .populate({
+                path: 'electionDuty',    // Populate electionDuty to get user details
+                select: 'userFullName'  // Only get userFullName if needed
+            });
+        return res.status(200).json(electionList);
+
+    }catch(err){
+        res.status(500).json({ error: err.message });
+    }
+}
+
+const facultyApproveOrReject = async (req, res) => {
+    const { id } = req.params;
+    const { status, rejectReason } = req.body;
+
+    try {
+        let electionObj;
+
+        if (status === 'accept_duty') {
+            electionObj = await electionModel.findByIdAndUpdate(
+                id,
+                { $set: { isFacultyAccepted: true, facultyRejectReason: '' } }, // Clear rejectReason if accepted
+                { new: true }
+            );
+        }
+
+        if (status === 'reject_duty') {
+            electionObj = await electionModel.findByIdAndUpdate(
+                id,
+                { $set: { isFacultyAccepted: false, facultyRejectReason: rejectReason } }, // Set reject reason if rejected
+                { new: true }
+            );
+        }
+
+        // Check if electionObj is null or undefined
+        if (!electionObj) {
+            return res.status(404).json({ error: "Election not found!" });
+        }
+
+        if (status === 'accept_duty') {
+            return res.status(200).json({ message: 'You have accepted the election duty!' });
+        } else {
+            return res.status(200).json({ message: 'You have rejected the election duty!' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+const startElectionFlag  = async (req,res)=>{
+    const {id} = req.params;
+    try{
+        const electionObj = await electionModel.findById(id);
+        if(!electionObj){
+            return res.status(404).json({message : 'Cannot fetch election object'});
+        }
+
+    }catch(err){
+        return res.status(500).json({error : err.message})
+    }
+}
+
+
+
+
+
+module.exports={
+    addElection, 
+    getAllElection, 
+    deleteElection, 
+    getSingleElection,
+    getElectionsOnCurrentDay, 
+    getFacultyAssignedElection,
+    getApprovedElectionList,
+    getFacultyApproveList,
+    facultyApproveOrReject,
+    startElectionFlag
+};

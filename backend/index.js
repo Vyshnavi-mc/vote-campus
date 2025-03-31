@@ -5,6 +5,7 @@ const { departmentRouter } = require('./Routes/departmentRouter');
 const {batchRouter} = require('./Routes/batchRouter');
 const {userRouter} = require('./Routes/userRouter');
 const {electionRouter} = require('./Routes/electionRouter');
+const { nominationRouter } = require('./Routes/nomination');
 
 const dotenv = require('dotenv').config()
 
@@ -16,6 +17,7 @@ app.use("/api/department",departmentRouter);
 app.use("/api/batch",batchRouter);
 app.use("/api/user/add",userRouter);
 app.use("/api/election",electionRouter);
+app.use("/api/nomination",nominationRouter);
 
 const PORT  = process.env.PORT || 3000;
 

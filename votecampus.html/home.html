@@ -74,7 +74,10 @@
                         <button type="submit" class="btn btn-success w-100">Log in</button>
                         <p class="text-center mt-2">Haven't created an account yet?</p>
                         <a href="./signup.html" class="btn btn-custom w-100">Sign Up</a>
-                        <p id="error-message" class="text-danger text-center mt-2"></p>
+                        <p style="
+                        padding: 10px;
+
+                        font-size: 14px" id="error-message" class="text-danger text-center mt-2"></p>
                     </form>
                 </div>
             </div>
@@ -107,16 +110,20 @@
                     throw new Error(data.message || "Login failed. Please check your credentials.");
                 }
 
-                // Save user data in localStorage
                 if (data.token) {
+                    console.log(data);
                     localStorage.setItem("token", data.token);
                     localStorage.setItem("role", data.userRole);
+                    localStorage.setItem("userId", data.userID);
+                    localStorage.setItem('isTutor', data.isTutor);
+                    localStorage.setItem('userName', data.userFullName);
+                    localStorage.setItem('userDepartment', data.departmentRef);
+                    localStorage.setItem('batchRef', data.batchRef);
+                    localStorage.setItem('admissionNo', data.admissionNo);
                 }
 
                 showToast("Login Successful!", "success");
-
-                // Redirect after 2 seconds
-                setTimeout(() => { // Store role
+                setTimeout(() => { 
                     redirectUser(data.userRole);
                 }, 2000);
             } catch (error) {
@@ -134,7 +141,7 @@
                     window.location.href = "./faculty.html";
                     break;
                 case "Student":
-                    window.location.href = "./student.html";
+                    window.location.href = "./studentportal.html";
                     break;
                 default:
                     window.location.href = "error404.html"; 

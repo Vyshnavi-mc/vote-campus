@@ -1032,7 +1032,7 @@
             border-collapse: collapse;
         }
 
-        .projects-table th {
+        .projects-table th , .voter-list-table th {
             text-align: left;
             padding: var(--spacing-md);
             border-bottom: 2px solid var(--gray-light);
@@ -1041,21 +1041,21 @@
             transition: border-color var(--transition-normal), color var(--transition-normal);
         }
 
-        .projects-table td {
+        .projects-table td , .voter-list-table td {
             padding: var(--spacing-md);
             border-bottom: 1px solid var(--gray-light);
             transition: border-color var(--transition-normal);
         }
 
-        .projects-table tr:last-child td {
+        .projects-table tr:last-child td, .voter-list-table tr:last-child td {
             border-bottom: none;
         }
 
-        .projects-table tr {
+        .projects-table tr, .voter-list-table tr {
             transition: background-color var(--transition-fast);
         }
 
-        .projects-table tr:hover {
+        .projects-table tr:hover, .voter-list-table tr:hover {
             background-color: var(--gray-light);
         }
 
@@ -2313,6 +2313,279 @@
         background-color: #f2f2f2;
     }
 
+    /* === Result Cards === */
+    .filter-container {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+            transition: background-color var(--transition-normal);
+        }
+
+        .result-card {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            height: 100%;
+            animation: fadeIn var(--transition-normal);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .result-card-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color var(--transition-normal);
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+            transition: color var(--transition-normal);
+        }
+
+        .result-badge {
+            background-color: var(--success);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-full);
+            font-weight: 500;
+        }
+
+        .result-badge-pending {
+            background-color: var(--warning);
+        }
+
+        .result-badge-rejected{
+            background-color: var(--danger);
+        }
+
+        .result-card-body {
+            padding: var(--spacing-lg);
+        }
+
+        .nominee-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .nominee-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-right: var(--spacing-md);
+            border: 2px solid var(--secondary);
+        }
+
+        .nominee-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nominee-details {
+            flex: 1;
+        }
+
+        .nominee-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0 0 0.25rem 0;
+            transition: color var(--transition-normal);
+        }
+
+        .nominee-position {
+            font-size: 0.875rem;
+            color: var(--secondary);
+            margin: 0;
+        }
+
+        .result-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 0.25rem;
+            transition: color var(--transition-normal);
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            transition: color var(--transition-normal);
+        }
+
+        .countdown {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .vote-progress {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .progress {
+            height: 8px;
+            background-color: var(--gray-light);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            transition: background-color var(--transition-normal);
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width var(--transition-slow);
+        }
+
+        .result-card-footer {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            transition: border-color var(--transition-normal);
+        }
+
+        /* === Announcement Ticker === */
+        .announcement-ticker {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: background-color var(--transition-normal);
+            min-width: 300px;
+            max-width: 78vw;
+            border-left: 4px solid red;
+            position: relative;
+            display: flex;
+            align-items: center; /* Vertically center the items */
+        }
+
+        /* Blinking red dot */
+        .blink-dot {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            position: relative;
+            margin-right: 10px; /* Add space between the dot and text */
+            animation: blink-dot 1s infinite;
+        }
+
+        /* Wrapper for content to ensure space between dot and text */
+        .ticker-wrapper {
+            flex-grow: 1; /* Allows content to fill remaining space */
+            overflow: hidden;
+            height: 30px;
+        }
+
+        /* Content inside ticker */
+        .ticker-content {
+            display: inline-flex;
+            white-space: nowrap;
+            animation: ticker 5s linear infinite;
+            width: auto;
+        }
+
+        /* Individual ticker items */
+        .ticker-item {
+            display: inline-block;
+            padding: 0 var(--spacing-xl);
+            color: var(--dark);
+            font-weight: 500;
+            transition: color var(--transition-normal);
+            flex-shrink: 0;
+        }
+        .nomination-item-status {
+            font-size: 0.75rem;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-full);
+            background-color: var(--success);
+            color: var(--white);
+            display: inline-block;
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Keyframes for blinking the dot */
+        @keyframes blink-dot {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Keyframes for the ticker to move */
+        @keyframes ticker {
+            0% {
+                transform: translateX(100);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+
+
+        .ticker-wrapper {
+            position: relative;
+            overflow: hidden; /* Hide overflowing content */
+            height: 30px;
+            width: 100%; /* Restrict width to 100% of parent */
+            max-width: 100vw; /* Prevent it from exceeding the viewport width */
+        }
+
+
+        .ticker-content {
+            display: inline-flex;
+            white-space: nowrap;
+            animation: ticker 30s linear infinite;
+            width: auto; /* Prevent content from stretching */
+        }
+
+
+
+
+        .ticker-item {
+            display: inline-block;
+            padding: 0 var(--spacing-xl);
+            color: var(--dark);
+            font-weight: 500;
+            transition: color var(--transition-normal);
+            flex-shrink: 0; /* Prevents shrinking to fit */
+        }
+
     </style>
 </head>
 <body>
@@ -2604,6 +2877,20 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- Auto-sliding text for important information -->
+                <div class="announcement-ticker">
+                    <div class="blink-dot"></div> <!-- Red blinking dot -->
+                    <div class="ticker-wrapper">
+                        <div class="ticker-content ms-5">
+                            <div class="ticker-item">🔔 Important: CS Year 3 Election ends in 2 hours!</div>
+                            <!-- <div class="ticker-item">📊 ECE Year 1 Election results are now available</div>
+                            <div class="ticker-item">🗓️ New election scheduled for EEE Department on May 15th</div>
+                            <div class="ticker-item">⚠️ System maintenance scheduled for tonight at 11 PM</div> -->
+                        </div>
+                    </div>
+                </div>
+                
                 
                 <!-- Stat Cards -->
                 <div class="stat-cards">
@@ -3176,7 +3463,7 @@
                 
                 <div class="election-tabs">
                     <div class="election-tab active" data-tab="create">Create an Election</div>
-                    <div class="election-tab" data-tab="manage">Manage Elections</div>
+                    <div class="election-tab" data-tab="manage">Election Status</div>
                 </div>
                 
                 <div class="election-tab-content active" id="createElectionTab">
@@ -3251,7 +3538,7 @@
                 <div class="election-tab-content" id="manageElectionTab">
                     <div class="projects-card animate-fadeIn">
                         <div class="projects-header">
-                            <h3 class="projects-title">Manage Elections</h3>
+                            <h3 class="projects-title">Election Status</h3>
                         </div>
                         <table class="manage-elections-table">
                             <thead>
@@ -3262,6 +3549,7 @@
                                     <th>From Date</th>
                                     <th>To Date</th>
                                     <th>Assigned Faculty</th>
+                                    <th>Reject Reason</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -3305,7 +3593,7 @@
                             <button class="btn btn-primary" onclick="applyFilters()">Search</button>
                         </div>
                     </div>
-                    <table class="voter-list-table table table-striped table-bordered">
+                    <table class="voter-list-table table  table-bordered" style="text-align: left;">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -3328,7 +3616,7 @@
                     <h1 class="page-title">Publish Result</h1>
                     <div class="header-actions">
                         <button class="action-button">
-                            <i class="fas fa-plus"></i>
+                            <i class="fas fa-download"></i>
                         </button>
                         <button class="theme-toggle" id="themeToggleCalendar">
                             <i class="fas fa-sun"></i>
@@ -3336,16 +3624,171 @@
                         </button>
                     </div>
                 </div>
-                <div class="placeholder-content">
-                    <i class="fas fa-calendar-alt placeholder-icon"></i>
-                    <h3>Publish Result Content</h3>
-                    <p>This is the publish result page content. You can customize this section to publish election results.</p>
+                
+                <!-- Filter options for publish results -->
+                <div class="filter-container">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label for="filter-election-name" class="form-label">Election Name</label>
+                            <select id="filter-election-name" class="form-select">
+                                <option value="">All Elections</option>
+                                <option value="cs-year3">CS Year 3 : Class Rep</option>
+                                <option value="ece-year1">ECE Year 1 : Class Rep</option>
+                                <option value="eee-year2">EEE Year 2 : Class Rep</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="filter-election-date" class="form-label">Election Date</label>
+                            <input type="date" id="filter-election-date" class="form-control">
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-primary w-100" id="apply-result-filter">Apply Filter</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results cards with animation -->
+                <div class="results-container">
+                    <div class="row">
+                        <!-- Result Card 1 -->
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="result-card">
+                                <div class="result-card-header">
+                                    <h3 class="result-title">CS Year 3 : Class Rep</h3>
+                                    <span class="result-badge">Completed</span>
+                                </div>
+                                <div class="result-card-body">
+                                    <div class="nominee-info">
+                                        <div class="nominee-avatar">
+                                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John Davis">
+                                        </div>
+                                        <div class="nominee-details">
+                                            <h4 class="nominee-name">John Davis</h4>
+                                            <p class="nominee-position">Winner</p>
+                                        </div>
+                                    </div>
+                                    <div class="result-stats">
+                                        <div class="stat-item">
+                                            <span class="stat-label">Total Votes</span>
+                                            <span class="stat-value">124</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Voting Ended</span>
+                                            <span class="stat-value">2 days ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="vote-progress">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 68%;" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100">68%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="result-card-footer">
+                                    <button class="btn btn-outline-primary btn-sm view-details-btn">
+                                        <i class="fas fa-chart-bar me-1"></i> View Details
+                                    </button>
+                                    <button class="btn btn-outline-success btn-sm publish-btn">
+                                        <i class="fas fa-share-alt me-1"></i> Publish
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Result Card 2 -->
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="result-card">
+                                <div class="result-card-header">
+                                    <h3 class="result-title">ECE Year 1 : Class Rep</h3>
+                                    <span class="result-badge">Completed</span>
+                                </div>
+                                <div class="result-card-body">
+                                    <div class="nominee-info">
+                                        <div class="nominee-avatar">
+                                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
+                                        </div>
+                                        <div class="nominee-details">
+                                            <h4 class="nominee-name">Sarah Johnson</h4>
+                                            <p class="nominee-position">Winner</p>
+                                        </div>
+                                    </div>
+                                    <div class="result-stats">
+                                        <div class="stat-item">
+                                            <span class="stat-label">Total Votes</span>
+                                            <span class="stat-value">98</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Voting Ended</span>
+                                            <span class="stat-value">5 days ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="vote-progress">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 72%;" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100">72%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="result-card-footer">
+                                    <button class="btn btn-outline-primary btn-sm view-details-btn">
+                                        <i class="fas fa-chart-bar me-1"></i> View Details
+                                    </button>
+                                    <button class="btn btn-outline-success btn-sm publish-btn">
+                                        <i class="fas fa-share-alt me-1"></i> Publish
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Result Card 3 -->
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="result-card">
+                                <div class="result-card-header">
+                                    <h3 class="result-title">EEE Year 2 : Class Rep</h3>
+                                    <span class="result-badge result-badge-pending">Pending</span>
+                                </div>
+                                <div class="result-card-body">
+                                    <div class="nominee-info">
+                                        <div class="nominee-avatar">
+                                            <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Michael Brown">
+                                        </div>
+                                        <div class="nominee-details">
+                                            <h4 class="nominee-name">Michael Brown</h4>
+                                            <p class="nominee-position">Leading</p>
+                                        </div>
+                                    </div>
+                                    <div class="result-stats">
+                                        <div class="stat-item">
+                                            <span class="stat-label">Current Votes</span>
+                                            <span class="stat-value">87</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Voting Ends In</span>
+                                            <span class="stat-value countdown">12:45:30</span>
+                                        </div>
+                                    </div>
+                                    <div class="vote-progress">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 55%;" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100">55%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="result-card-footer">
+                                    <button class="btn btn-outline-primary btn-sm view-details-btn">
+                                        <i class="fas fa-chart-bar me-1"></i> View Details
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm publish-btn" disabled>
+                                        <i class="fas fa-share-alt me-1"></i> Publish
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
      <!-- Toast Notifications -->
      <div id="toast-container"></div>
+     <script src="authentication.js"></script>
      <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
@@ -3399,14 +3842,27 @@
             
             return `${year}-${month}-${day}T${hours}:${minutes}`;
         }
+
+        // document.addEventListener('DOMContentLoaded', () => {
+        //     const tickerContent = document.querySelector('.ticker-content');
+        //     const contentWidth = tickerContent.scrollWidth; // Get the width of the content
+        //     const wrapperWidth = document.querySelector('.ticker-wrapper').offsetWidth; // Get the width of the container
+
+        //     // Calculate duration dynamically (1 second per 100px width)
+        //     const speed = contentWidth / 100; 
+        //     tickerContent.style.animationDuration = `${speed}s`;
+        // });
+
         
         // Initialize charts when the DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
+            protectPage("Admin");
             getAllBatches();
             getAllFaculty();
             getAllElection();
             getmanageAllElection();
             // getElectionToday();
+            
 
             // Menu functionality
             const menuItems = document.querySelectorAll('.menu-item');
@@ -4052,119 +4508,7 @@
             });
         });
 
-        function isAuthenticated() {
-            return localStorage.getItem("token") !== null;
-        }
-
-        // Get user role from localStorage
-        function getUserRole() {
-            return localStorage.getItem("role");
-        }
-
-        function protectPage(requiredRole) {
-            if (!isAuthenticated()) {
-                window.location.href = "unauthorized.html";
-                return;
-            }
-
-            const userRole = getUserRole();
-            if (userRole !== requiredRole) {
-                window.location.href = "unauthorized.html"; 
-            }
-        }
-
-        // Protect specific pages
-        document.addEventListener("DOMContentLoaded", function () {
-            // Call protectPage() with the required role for this page
-            protectPage("Admin"); // Example for admin.html
-            // For other pages:
-            // protectPage("Faculty");
-            // protectPage("Student");
-        });
-
-        async function getAllBatches() {
-            try{
-                const batches = await fetch("http://localhost:3000/api/batch/get-all-batch");
-                const batchData = await batches.json();
-                console.log(batchData);
-                electionBatch.innerHTML=`<option selected disabled>Select Batch</option>`;
-                batchData.forEach(batch => {
-                        let option = document.createElement("option");
-                        option.value = batch._id;
-                        option.textContent = batch.batchName;
-                        electionBatch.appendChild(option);
-                    });
-            }catch(err){
-                console.error("Error fetching batches:", error);           
-            }
-
-        }
-
-        async function getAllFaculty() {
-            try{
-                const faculty = await fetch("http://localhost:3000/api/user/add/get-all-faculty");
-                const facultyData = await faculty.json();
-                console.log(facultyData);
-                electionDuty.innerHTML=`<option selected disabled>Select Batch</option>`;
-                facultyData.forEach(faculty => {
-                        let option = document.createElement("option");
-                        option.value = faculty._id;
-                        option.textContent = faculty.userFullName;
-                        electionDuty.appendChild(option);
-                    });
-            }catch(error){
-                console.error("Error fetching batches:", error);           
-            }
-
-        }
-
-        async function getAllElection() {
-            try {
-                const response = await fetch("http://localhost:3000/api/election/list-election");
-                const electionData = await response.json();
-                const electionTableBody = document.querySelector(".elections-table tbody");
-
-                electionTableBody.innerHTML = '';
-
-                if (electionData.length === 0) {
-                    electionTableBody.innerHTML = `
-                        <tr>
-                            <td colspan="7" style="text-align: center;">No elections found!</td>
-                        </tr>
-                    `;
-                    return;
-                }
-
-                    electionData.forEach(election => {
-                        const row = document.createElement('tr');
-
-                        row.innerHTML = `
-                            <td>${election.electionName}</td>
-                            <td>${election.electionRole}</td>
-                            <td>${formatDateTime(election.electionFrom)}</td>
-                            <td>${formatDateTime(election.electionTo)}</td>
-                            <td>${election.electionDuty.userFullName}</td>
-                            <td>${election.electionVenue}</td>
-                            <td>
-                                <div class="election-actions">
-                                    <button class="election-action edit" onclick="editElection('${election._id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="election-action delete" onclick="deleteElection('${election._id}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        `;
-                        electionTableBody.appendChild(row);
-                    });
-
-                } catch (error) {
-                    console.error("Error fetching election data:", error);
-                }
-            }
-
-
+       
             async function deleteElection(electionId, button) {
                 const result = await Swal.fire({
                     title: "Are you sure?",
@@ -4239,27 +4583,41 @@
                         electionData.forEach(election => {
                             const row = document.createElement('tr');
 
+                            // Handling status separately to inject correct span
+                            let statusHTML = election.isFacultyAccepted === true
+                            ? `<span class="nomination-item-status">Approved</span>`
+                            : election.isFacultyAccepted === false
+                            ? `<span class="result-badge result-badge-rejected">Rejected</span>`
+                            : `<span class="result-badge result-badge-pending">Pending</span>`;
+
+                            // Correctly inject statusHTML inside the row
+                            let buttonDisabled = election.isFacultyAccepted === false ? 'disabled' : '';
+
+                            // Correctly inject statusHTML and actions in the row
                             row.innerHTML = `
                                 <td>${election.electionName}</td>
                                 <td>${election.electionRole}</td>
+                                <td>${statusHTML}</td>
                                 <td>${formatDateTime(election.electionFrom)}</td>
                                 <td>${formatDateTime(election.electionTo)}</td>
                                 <td>${election.electionDuty.userFullName}</td>
-                                <td>${election.electionVenue}</td>
+                                <td>${election.facultyRejectReason || '-'}</td> <!-- Show reason or '-' if empty -->
                                 <td>
                                     <div class="election-actions">
-                                                <button class="election-action view">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button class="election-action terminate" disabled>
-                                                    <i class="fas fa-ban"></i>
-                                                </button>
-                                                <button class="election-action end" disabled>
-                                                    <i class="fas fa-flag-checkered"></i>
-                                                </button>
-                                            </div>
+                                        <!-- Start Election Button -->
+                                        <button title="Start Election" class="election-action start" onclick="startElection('${election._id}')" ${buttonDisabled}>
+                                            <i class="fas fa-play"></i>
+                                        </button>
+
+                                        <!-- Terminate Election Button -->
+                                        <button title="Terminate Election" class="election-action terminate" onclick="terminateElection('${election._id}')" ${buttonDisabled}>
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             `;
+
+                            // Append the row to the table
                             manageTableBody.appendChild(row);
                         });
 
@@ -4375,7 +4733,7 @@
                 <td>${voter.userFullName || "N/A"}</td>
                 <td>${voter.studentAdmissionNumber || "N/A"}</td>
                 <td>${voter.departmentRef?.departmentShortName || "N/A"}</td>
-                <td>${voter.batchRef?.batchYear || "N/A"}</td>
+                <td>${voter.batchRef?.batchName || "N/A"}</td>
             </tr>
         `);
     });
@@ -4387,6 +4745,58 @@
         loadDropdowns();  // Load Departments and Batches
         applyFilters();  // Load all voters initially
     });
+
+    const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
+            viewDetailsButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    Swal.fire({
+                        title: 'Election Results',
+                        html: `
+                            <div class="text-start">
+                                <div class="mb-3">
+                                    <strong>Election:</strong> CS Year 3 : Class Rep
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Total Votes:</strong> 124
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Candidates:</strong>
+                                    <ul class="list-unstyled mt-2">
+                                        <li>John Davis - 84 votes (68%)</li>
+                                        <li>Sarah Miller - 32 votes (26%)</li>
+                                        <li>Robert Wilson - 8 votes (6%)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `,
+                        confirmButtonColor: '#e67e22',
+                        confirmButtonText: 'Close'
+                    });
+                });
+            });
+
+            const publishButtons = document.querySelectorAll('.publish-btn:not([disabled])');
+            publishButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    Swal.fire({
+                        title: 'Publish Results',
+                        text: 'Are you sure you want to publish these election results?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#2ecc71',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, publish it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            showToast('Results published successfully!', 'success');
+                            button.innerHTML = '<i class="fas fa-check me-1"></i> Published';
+                            button.classList.remove('btn-outline-success');
+                            button.classList.add('btn-success');
+                            button.disabled = true;
+                        }
+                    });
+                });
+            });
 
 
     /////////////////////////////////////////////////////////
@@ -4419,5 +4829,6 @@ function hideContextMenu() {
 
 
     </script>
+    <script src="./script.js"></script>
 </body>
 </html>

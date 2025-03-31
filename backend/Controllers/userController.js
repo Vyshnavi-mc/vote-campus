@@ -7,8 +7,8 @@ const { ObjectId } = mongoose.Types; // Import ObjectId
 
 const registerUser = async (req, res) => {
     try {
-        const { userFullName, userEmail, signUpRole, departmentRef, studentAdmissionNumber, batchRef, password, secretCode } = req.body;
-
+        const { userFullName, userEmail, signUpRole, departmentRef, studentAdmissionNumber, batchRef,facultyBatchRef, password, secretCode, isTutor } = req.body;
+        console.log(isTutor);
         if (!userEmail) {
             return res.status(400).json({ error: "Email required" });
         }
@@ -51,6 +51,13 @@ const registerUser = async (req, res) => {
             batchId = null;
         }
 
+        batchId = '';
+        if(signUpRole === 'Student'){
+            batchId = batchRef
+        }else{
+            batchId = facultyBatchRef
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = new userModel({
@@ -61,7 +68,8 @@ const registerUser = async (req, res) => {
             departmentRef: departmentId,
             studentAdmissionNumber,
             batchRef: batchId, 
-            secretCode
+            secretCode,
+            isTutor
         });
 
         const userSave = await newUser.save();
@@ -99,13 +107,15 @@ const userLogin = async (req, res) => {
             console.log("Incorrect password.");
             return res.status(401).json({ message: "Username/Password Incorrect" });
         }
+        // Generate JWT token, we want this to be saved in the localstorage inorder to retrieve profile information!
+        const token = jwt.sign({ id: user._id, role:user.signUpRole,isTutor: user.isTutor,departmentRef: user.departmentRef,batchRef: user.batchRef }, "secret", { expiresIn: "1h" });
 
-        console.log("Password matched. Generating token...");
-        // Generate JWT token
-        const token = jwt.sign({ id: user._id, role:user.signUpRole }, "secret", { expiresIn: "1h" });
-
-        console.log("Login successful.");
-        return res.status(200).json({ token, userID: user._id, userRole : user.signUpRole });
+        if(user.isVoter === true || user.signUpRole !== 'Student'){
+            console.log('batchref');
+            console.log(user.batchRef);
+            return res.status(200).json({ token, userID: user._id,userFullName:user.userFullName, userRole : user.signUpRole, isTutor : user.isTutor, departmentRef : user.departmentRef, batchRef: user.batchRef, admissionNo : user.studentAdmissionNumber });
+        }
+        return res.status(500).json({ message: "Your access is prohibited. Your profile is not approved by the faculty. Once approved, you will be added as a voter!"})
 
     } catch (error) {
         console.error("Login Error:", error.message);
@@ -126,27 +136,45 @@ const userLogin = async (req, res) => {
 
     const fetchAllVoters = async (req, res) => {
         try {
-            const { userFullName, departmentRef, batchRef } = req.query;
+            const { userFullName, departmentRef, batchRef, source="" } = req.query;
             let query = {};
-            query.signUpRole = 'Student';
-            // Apply filters only if they are provided
+    
+            query.signUpRole = "Student"; // Always filter for Students
+            console.log(batchRef);
+            // Exclude rejected voters unless explicitly asked for all
+            if (source && source !== "voter_all") {
+                query.isRejected = { $ne: true };
+            }
+    
+            // Handle voter approval logic
+            if (source === "voter_approval") {
+                query.isVoter = { $ne: true }; // For approval requests
+            } else if (source === "voter_all") {
+                delete query.isVoter; // Show all voters without filtering
+            } else {
+                query.isVoter = true; // Default: show approved voters
+            }
+    
+            // Apply filters only if provided
             if (userFullName) {
                 query.userFullName = { $regex: userFullName, $options: "i" }; // Case-insensitive partial match
             }
-            if (departmentRef) {
-                query.departmentRef = departmentRef; // Match ObjectId for department
+    
+            // Validate ObjectId for department and batch
+            const mongoose = require("mongoose");
+            if (departmentRef && mongoose.Types.ObjectId.isValid(departmentRef)) {
+                query.departmentRef = departmentRef;
             }
-            if (batchRef) {
-                query.batchRef = batchRef; // Match ObjectId for batch
+            if (batchRef && mongoose.Types.ObjectId.isValid(batchRef)) {
+                query.batchRef = batchRef;
             }
     
-            // Fetch users based on query and populate department and batch
+            // Fetch users based on query and populate department and batch references
             const result = await userModel
                 .find(query)
                 .populate("departmentRef", "departmentShortName") // Show department name
-                .populate("batchRef", "batchYear"); // Show batch year
+                .populate("batchRef", "batchName"); // Show batch name
     
-            // Send the filtered data
             return res.status(200).json(result);
         } catch (err) {
             console.error("Error fetching voters:", err.message);
@@ -155,6 +183,73 @@ const userLogin = async (req, res) => {
     };
     
 
+    const approveOrRejectUserAsVoter = async (req, res) => {
+        const { id } = req.params; 
+        const { approveStatus, rejectStatus, rejectReason } = req.body;
+    
+        try {
+            const user = await userModel.findById(id);   
+            if (!user) {
+                return res.status(404).json({ message: "Cannot find user" });
+            }
+
+            let updateFields = {};
+            if (approveStatus === true) {
+                updateFields.isVoter = true;
+                updateFields.isRejected = false;
+                updateFields.voterRejectReason = ""; 
+            } else if (rejectStatus === true) {
+                updateFields.isVoter = false;
+                updateFields.isRejected = true;
+                updateFields.voterRejectReason = rejectReason || "No reason provided"; 
+            }
+    
+            const updatedUser = await userModel.findByIdAndUpdate(
+                id,
+                { $set: updateFields },
+                { new: true, runValidators: true }
+            );
+    
+            if (approveStatus === true) {
+                return res.status(200).json({
+                    message: `User ${user.userFullName} approved successfully`,
+                    user: updatedUser,
+                });
+            } else if (rejectStatus === true) {
+                return res.status(200).json({
+                    message: `User ${user.userFullName} rejected successfully`,
+                    user: updatedUser,
+                });
+            } else {
+                return res.status(400).json({ message: "Invalid request: No action specified" });
+            }
+        } catch (err) {
+            console.error("Error updating voter status:", err.message);
+            return res.status(500).json({ error: err.message });
+        }
+    };
+
+    const fetchUserDetails = async (req, res) => {
+        const { id } = req.params;
+        try {
+            const user = await userModel
+                .findById(id)
+                .populate('batchRef', 'batchName') // Populate batchRef with batchName
+                .populate('departmentRef', 'departmentShortName'); // Populate departmentRef if needed
+    
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+    
+            return res.status(200).json(user);
+        } catch (err) {
+            return res.status(500).json({ err: err.message });
+        }
+    };
+    
+    
+    
 
 
-  module.exports={registerUser, userLogin, getAllFaculty, fetchAllVoters}
+
+  module.exports={registerUser, userLogin, getAllFaculty, fetchAllVoters, approveOrRejectUserAsVoter,fetchUserDetails}

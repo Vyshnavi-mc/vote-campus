@@ -38,6 +38,24 @@ const electionSchema = new mongoose.Schema({
     isTerminated:{
         type:Boolean,
         required:false
+    },
+    isFacultyAccepted:{
+        type:Boolean,
+        required:false
+    },
+    facultyRejectReason:{
+        type:String,
+        required:false
+    },
+    electionNominee: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'nomination' 
+        }
+    ],
+    electionInitiate:{
+        type:Boolean,
+        required:false
     }
 
     

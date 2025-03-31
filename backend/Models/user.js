@@ -35,6 +35,34 @@ const userSchema = new mongoose.Schema({
     secretCode: {
         type: String,
         required: function () { return this.signUpRole !== "Student"; } // Required for Faculty & Admin
+    },
+    isTutor: {
+        type:Boolean,
+        required:true
+    },
+    isVoter: {
+        type:Boolean,
+        required:false
+    },
+    isNominee:{
+        type:Boolean,
+        required:false
+    },
+    isRejected:{
+        type:Boolean,
+        required:false 
+    },
+    voterRejectReason:{
+        type:String,
+        required:false
+    },
+    approvedBy:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+    },
+    rejectedBy:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
     }
 });
 

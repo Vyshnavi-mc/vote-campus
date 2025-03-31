@@ -134,7 +134,7 @@
 
                         <div class="row mb-3 hidden" id="faculty-fields">
                             <div class="col-md-6">
-                                <label for="is-tutor" class="form-label">Is Faculty?</label>
+                                <label for="is-tutor" class="form-label">Is Tutor?</label>
                                 <select id="is-tutor" class="form-select" onchange="toggleTutorFields()">
                                     <option selected disabled>Choose...</option>
                                     <option value="Yes">Yes</option>
@@ -150,7 +150,7 @@
                         <!-- Secret Code Always Available for Faculty and Admin -->
                         <div class="mb-3 hidden" id="secret-code-div">
                             <label for="secret-code" class="form-label">Enter Secret Code</label>
-                            <input id="secret-code" type="text" class="form-control" placeholder="Enter code">
+                            <input id="secret-code" type="password" class="form-control" placeholder="Enter code">
                         </div>
 
                         <div class="row mb-3">
@@ -261,6 +261,11 @@
         // Handle Form Submission
         document.getElementById("signup-form").addEventListener("submit", async function (event) {
             event.preventDefault();
+            var isTutorVal = document.getElementById("is-tutor").value;
+            var isTutor = false;
+            if(isTutorVal == 'Yes'){
+                var isTutor = true;
+            }
 
             const requestBody = {
                 userFullName: document.getElementById("student-fullName").value,
@@ -271,7 +276,8 @@
                 batchRef: document.getElementById("batch-year").value || "",
                 facultyBatchRef: document.getElementById("faculty-batch-year").value || "",
                 password: document.getElementById("pass-first").value,
-                secretCode: document.getElementById("secret-code").value || ""
+                secretCode: document.getElementById("secret-code").value || "",
+                isTutor: isTutor
             };
 
             if (requestBody.password !== document.getElementById("re-pass-first").value) {

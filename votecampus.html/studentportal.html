@@ -3,119 +3,2965 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal - E-Voting</title>
+    <title>Student Profile - Vote Campus</title>
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* === Base Styles === */
+        :root {
+            /* Color Variables */
+            --primary: #2c3e50;
+            --primary-light: #34495e;
+            --primary-dark: #1a252f;
+            --secondary: #e67e22;
+            --secondary-light: #f39c12;
+            --secondary-dark: #d35400;
+            --accent: #3498db;
+            --accent-light: #5dade2;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --gray-dark: #343a40;
+            --white: #ffffff;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.25rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        /* Dark Mode Variables */
+        .dark-mode {
+            --primary: #1a1a2e;
+            --primary-light: #16213e;
+            --primary-dark: #0f3460;
+            --secondary: #e67e22;
+            --secondary-light: #f39c12;
+            --secondary-dark: #d35400;
+            --accent: #3a86ff;
+            --accent-light: #5dade2;
+            --light: #121212;
+            --dark: #f8f9fa;
+            --gray: #adb5bd;
+            --gray-light: #2a2a2a;
+            --gray-dark: #ced4da;
+            --white: #1e1e1e;
+            
+            color-scheme: dark;
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            background: url('evoting-background.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            text-align: center;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .header {
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            transition: background-color var(--transition-normal);
+            overflow-x: hidden;
+            position: relative;
         }
-        .header h1 {
-            font-size: 3em;
-        }
-        .nav-buttons {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .nav-button {
-            background-color: rgba(0, 123, 255, 0.7);
-            border: none;
-            color: white;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-        .nav-button:hover {
-            background-color: rgba(0, 123, 255, 1);
-        }
-        .description {
-            margin-top: 40px;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            width: 80%;
-            margin-left: 10%;
-            border-radius: 10px;
-        }
-        .description h2 {
-            font-size: 2em;
-        }
-        .icons {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-        .icon {
-            font-size: 2.5em;
-            color: white;
-            transition: color 0.3s ease;
-        }
-        .icon:hover {
-            color: #00d2d2;
-        }
-        .footer {
-            position: absolute;
-            bottom: 0;
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(42, 67, 101, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(66, 133, 244, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .dark-mode::before {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(42, 67, 101, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(66, 133, 244, 0.05) 0%, transparent 50%);
+        }
+
+        /* === Animations === */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* === Layout === */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* === Sidebar === */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            position: fixed;
+            height: 100vh;
+            transition: all var(--transition-normal);
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-header {
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            height: 80px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-weight: bold;
+            font-size: 1.25rem;
+            transition: var(--transition-normal);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: var(--secondary);
+            color: var(--white);
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+            transition: var(--transition-normal);
+        }
+
+        .sidebar.collapsed .logo-icon {
+            width: 40px;
+            margin: 0 auto;
+        }
+
+        .logo-text {
+            transition: opacity var(--transition-normal), visibility var(--transition-normal);
+        }
+
+        .sidebar.collapsed .logo-text {
+            opacity: 0;
+            visibility: hidden;
+            width: 0;
+        }
+
+        .toggle-sidebar {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-full);
+            transition: background-color var(--transition-fast);
+        }
+
+        .toggle-sidebar:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-md) 0;
+        }
+
+        .sidebar-menu::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar-menu::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-menu::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-full);
+        }
+
+        .menu-section {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .menu-section-title {
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+            transition: opacity var(--transition-normal), padding var(--transition-normal);
+        }
+
+        .sidebar.collapsed .menu-section-title {
+            opacity: 0;
+            padding: var(--spacing-md) var(--spacing-sm);
+            text-align: center;
+            height: 0;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md) var(--spacing-lg);
+            cursor: pointer;
+            transition: background-color var(--transition-fast), padding var(--transition-normal);
+            position: relative;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0 var(--spacing-sm);
+            border-radius: var(--radius-md);
+        }
+
+        .sidebar.collapsed .menu-item {
+            padding: var(--spacing-md) 0;
+            justify-content: center;
+            margin: var(--spacing-xs) var(--spacing-sm);
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+        }
+
+        .menu-item.active {
+            background-color: var(--secondary);
+            color: var(--white);
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
+        }
+
+        .menu-icon {
+            font-size: 1.25rem;
+            min-width: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-normal);
+        }
+
+        .sidebar.collapsed .menu-icon {
+            min-width: auto;
+            margin: 0;
+        }
+
+        .menu-text {
+            margin-left: var(--spacing-md);
+            transition: opacity var(--transition-normal), visibility var(--transition-normal), margin var(--transition-normal);
+            white-space: nowrap;
+        }
+
+        .sidebar.collapsed .menu-text {
+            opacity: 0;
+            visibility: hidden;
+            width: 0;
+            margin-left: 0;
+        }
+
+        .menu-badge {
+            margin-left: auto;
+            background-color: var(--secondary);
+            color: var(--white);
+            font-size: 0.75rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: var(--radius-full);
+            transition: opacity var(--transition-normal), visibility var(--transition-normal), transform var(--transition-normal);
+        }
+
+        .sidebar.collapsed .menu-badge {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0);
+            position: absolute;
+        }
+
+        .sidebar-footer {
+            padding: var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            transition: padding var(--transition-normal);
+            position: relative;
+            overflow: visible;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar.collapsed .sidebar-footer {
+            padding: var(--spacing-md) var(--spacing-sm);
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            transition: background-color var(--transition-fast);
+            position: relative;
+            flex: 1;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--white);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            margin-left: var(--spacing-md);
+            transition: opacity var(--transition-normal), visibility var(--transition-normal);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed .user-info {
+            opacity: 0;
+            visibility: hidden;
+            width: 0;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .logout-btn {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(231, 76, 60, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .sidebar.collapsed .logout-btn {
+            margin: 0;
+        }
+
+        /* === Main Content === */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: var(--spacing-lg);
+            transition: margin-left var(--transition-normal), padding var(--transition-normal);
+        }
+
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 80px;
+        }
+
+        /* === Header === */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xl);
+            animation: fadeIn var(--transition-normal);
+            background-color: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: background-color var(--transition-normal);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--dark);
+            transition: color var(--transition-normal);
+            position: relative;
+            padding-left: var(--spacing-md);
+        }
+
+        .page-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background-color: var(--secondary);
+            border-radius: var(--radius-sm);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .action-button {
+            background-color: var(--white);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--gray-dark);
+            transition: all var(--transition-fast);
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .action-button:hover {
+            background-color: var(--secondary-light);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: var(--white);
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle {
+            background-color: var(--white);
+            border: none;
+            border-radius: var(--radius-full);
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray-dark);
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--secondary-light);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        .theme-toggle i {
+            font-size: 1rem;
+        }
+
+        /* === Dashboard Content === */
+        .content-page {
+            display: none;
+            animation: fadeIn var(--transition-normal);
+        }
+
+        .content-page.active {
+            display: block;
+        }
+
+        /* === Announcement Ticker === */
+        .announcement-ticker {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: background-color var(--transition-normal);
+            min-width: 300px;
+            max-width: 78vw;
+            border-left: 4px solid red;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Blinking red dot */
+        .blink-dot {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            position: relative;
+            margin-right: 10px;
+            animation: blink-dot 1s infinite;
+        }
+
+        /* Wrapper for content to ensure space between dot and text */
+        .ticker-wrapper {
+            flex-grow: 1;
+            overflow: hidden;
+            height: 30px;
+        }
+
+        /* Content inside ticker */
+        .ticker-content {
+            display: inline-flex;
+            white-space: nowrap;
+            animation: ticker 30s linear infinite;
+            width: auto;
+        }
+
+        /* Individual ticker items */
+        .ticker-item {
+            display: inline-block;
+            padding: 0 var(--spacing-xl);
+            color: var(--dark);
+            font-weight: 500;
+            transition: color var(--transition-normal);
+            flex-shrink: 0;
+        }
+
+        /* Keyframes for blinking the dot */
+        @keyframes blink-dot {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Keyframes for the ticker to move */
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* === User Profile Card === */
+        .profile-card {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            transition: all var(--transition-normal);
+            animation: fadeIn var(--transition-normal);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius-full);
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--white);
+            font-size: 2.5rem;
+            margin-right: var(--spacing-lg);
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 3px solid var(--secondary);
+        }
+
+        .profile-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: var(--dark);
+        }
+
+        .profile-admission {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .profile-department {
+            font-size: 0.875rem;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+        }
+
+        .profile-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* === Election Table === */
+        .elections-table-container {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            transition: all var(--transition-normal);
+            animation: fadeIn var(--transition-normal);
+        }
+
+        .elections-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .elections-table th {
+            text-align: left;
+            padding: var(--spacing-md);
+            border-bottom: 2px solid var(--gray-light);
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .elections-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .elections-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .elections-table tr {
+            transition: background-color var(--transition-fast);
+        }
+
+        .elections-table tr:hover {
+            background-color: var(--gray-light);
+        }
+
+        .table-badge {
+            display: inline-block;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-active {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .badge-upcoming {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--accent);
+        }
+
+        .badge-ended {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+            color: var(--dark);
+            position: relative;
+            padding-left: var(--spacing-md);
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background-color: var(--secondary);
+            border-radius: var(--radius-sm);
+        }
+
+        /* === Election Cards === */
+        .election-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .election-card {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            animation: fadeIn var(--transition-normal);
+            height: 100%;
+            position: relative;
+            border: 1px solid rgba(0,0,0,0.05);
+            transform: translateY(0);
+        }
+
+        .election-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .election-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary) 0%, var(--accent) 100%);
+        }
+
+        .election-card-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .election-card-header::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .election-card-body {
+            padding: var(--spacing-lg);
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, rgba(255,255,255,1) 100%);
+        }
+
+        .nominee-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            background-color: rgba(255,255,255,0.8);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nominee-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-right: var(--spacing-md);
+            border: 3px solid var(--secondary);
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2);
+            transition: all var(--transition-normal);
+        }
+
+        .election-card:hover .nominee-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.3);
+        }
+
+        .nominee-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-normal);
+        }
+
+        .election-card:hover .nominee-avatar img {
+            transform: scale(1.1);
+        }
+
+        .nominee-details {
+            flex: 1;
+        }
+
+        .nominee-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+            position: relative;
+            display: inline-block;
+        }
+
+        .nominee-name::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--secondary);
+            transition: width var(--transition-normal);
+        }
+
+        .election-card:hover .nominee-name::after {
+            width: 100%;
+        }
+
+        .nominee-role {
+            font-size: 0.875rem;
+            color: var(--secondary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .nominee-role::before {
+            content: '\f007';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 0.75rem;
+        }
+
+        .nominee-description {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            background-color: rgba(240, 240, 240, 0.5);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            color: var(--dark);
+            font-style: italic;
+            position: relative;
+            border-left: 3px solid var(--secondary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nominee-description::before {
+            content: '"';
+            font-size: 2.5rem;
+            color: var(--secondary);
+            position: absolute;
+            top: -15px;
+            left: 10px;
+            opacity: 0.2;
+            font-family: Georgia, serif;
+        }
+
+        .nominee-description::after {
+            content: '"';
+            font-size: 2.5rem;
+            color: var(--secondary);
+            position: absolute;
+            bottom: -35px;
+            right: 10px;
+            opacity: 0.2;
+            font-family: Georgia, serif;
+        }
+
+        .election-details {
+            margin-bottom: var(--spacing-md);
+            background-color: rgba(240, 240, 240, 0.3);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .election-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xs);
+            padding-bottom: var(--spacing-xs);
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+        }
+
+        .election-detail:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .detail-label::before {
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 0.75rem;
+        }
+
+        .election-detail:nth-child(1) .detail-label::before {
+            content: '\f274';
+        }
+
+        .election-detail:nth-child(2) .detail-label::before {
+            content: '\f017';
+        }
+
+        .election-detail:nth-child(3) .detail-label::before {
+            content: '\f3c5';
+        }
+
+        .detail-value {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .election-card-footer {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: center;
+            background-color: rgba(240, 240, 240, 0.2);
+        }
+
+        .vote-button {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-xl);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .vote-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s;
+            z-index: -1;
+        }
+
+        .vote-button:hover {
+            background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
+        }
+
+        .vote-button:hover::before {
+            left: 100%;
+        }
+
+        .vote-button.voted {
+            background: linear-gradient(135deg, var(--success) 0%, var(--success) 100%);
+            cursor: default;
+        }
+
+        .vote-button.voted:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .vote-button.voted::before {
+            display: none;
+        }
+
+        /* === Nomination Tabs === */
+        .nomination-container {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-xl);
+            overflow: hidden;
+            animation: fadeIn var(--transition-normal);
+        }
+
+        .nomination-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--gray-light);
+        }
+
+        .nomination-tab {
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-weight: 500;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color var(--transition-fast);
+            position: relative;
+        }
+
+        .nomination-tab.active {
+            color: var(--secondary);
+        }
+
+        .nomination-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--secondary);
+        }
+
+        .nomination-content {
+            padding: var(--spacing-lg);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn var(--transition-normal);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Nomination Form */
+        .nomination-form {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-md);
+            background-color: var(--white);
+            color: var(--dark);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.2);
+        }
+
+        .form-text {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-top: var(--spacing-xs);
+        }
+
+        .form-submit {
+            background-color: var(--secondary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .form-submit:hover {
+            background-color: var(--secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
+        }
+
+        /* Nomination Status Cards */
+        .nomination-status-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            animation: fadeIn var(--transition-normal);
+        }
+
+        .nomination-card {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            animation: slideInUp var(--transition-normal);
+            height: 100%;
+            border-top: 4px solid var(--secondary);
+        }
+
+        .nomination-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nomination-card.approved {
+            border-top-color: var(--success);
+        }
+
+        .nomination-card.rejected {
+            border-top-color: var(--danger);
+        }
+
+        .nomination-card-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background-color: var(--white);
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nomination-card-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .nomination-status {
+            font-size: 0.75rem;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-full);
+            font-weight: 500;
+        }
+
+        .status-approved {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .status-rejected {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .status-pending {
+            background-color: rgba(241, 196, 15, 0.1);
+            color: var(--warning);
+        }
+
+        .nomination-card-body {
+            padding: var(--spacing-lg);
+        }
+
+        .nomination-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .nomination-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-right: var(--spacing-md);
+            border: 2px solid var(--secondary);
+        }
+
+        .nomination-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nomination-details {
+            flex: 1;
+        }
+
+        .nomination-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .nomination-position {
+            font-size: 0.875rem;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .rejection-reason {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            background-color: rgba(231, 76, 60, 0.05);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--danger);
+            font-size: 0.9rem;
+            color: var(--dark);
+            animation: fadeIn var(--transition-normal);
+        }
+
+        .rejection-reason-title {
+            font-weight: 600;
+            color: var(--danger);
+            margin-bottom: var(--spacing-xs);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        /* Conditional form fields */
+        .conditional-field {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, margin 0.3s ease-in-out;
+            opacity: 0;
+            margin-top: 0;
+        }
+
+        .conditional-field.active {
+            max-height: 100px;
+            opacity: 1;
+            margin-top: var(--spacing-md);
+        }
+
+        /* === Notifications Panel === */
+        .notifications-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background-color: var(--white);
+            box-shadow: var(--shadow-xl);
+            z-index: 1100;
+            transition: right var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+            transition: right var(--transition-normal), background-color var(--transition-normal);
+        }
+
+        .notifications-panel.active {
+            right: 0;
+        }
+
+        .notifications-header {
+            padding: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-light);
+            transition: border-color var(--transition-normal);
+        }
+
+        .notifications-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+            transition: color var(--transition-normal);
+        }
+
+        .close-notifications {
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-full);
+            transition: background-color var(--transition-fast), color var(--transition-fast);
+        }
+
+        .close-notifications:hover {
+            background-color: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .notifications-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-light);
+            transition: border-color var(--transition-normal);
+        }
+
+        .notifications-tab {
+            flex: 1;
+            padding: var(--spacing-md);
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            transition: color var(--transition-fast), background-color var(--transition-fast);
+            position: relative;
+        }
+
+        .notifications-tab.active {
+            color: var(--secondary);
+        }
+
+        .notifications-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--secondary);
+        }
+
+        .notifications-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-md);
+        }
+
+        .notification-item {
+            display: flex;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            transition: background-color var(--transition-fast);
+            margin-bottom: var(--spacing-md);
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background-color: var(--gray-light);
+        }
+
+        .notification-item.unread {
+            background-color: rgba(230, 126, 34, 0.05);
+        }
+
+        .notification-item.unread:hover {
+            background-color: rgba(230, 126, 34, 0.1);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--spacing-md);
+            flex-shrink: 0;
+        }
+
+        .notification-icon.info {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--accent);
+        }
+
+        .notification-icon.success {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .notification-icon.warning {
+            background-color: rgba(241, 196, 15, 0.1);
+            color: var(--warning);
+        }
+
+        .notification-icon.danger {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+            color: var(--dark);
+            transition: color var(--transition-normal);
+        }
+
+        .notification-message {
+            color: var(--gray);
+            font-size: 0.875rem;
+            margin-bottom: var(--spacing-xs);
+            transition: color var(--transition-normal);
+        }
+
+        .notification-time {
+            color: var(--gray);
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            transition: color var(--transition-normal);
+        }
+
+        /* === Overlay === */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-normal), visibility var(--transition-normal);
+            backdrop-filter: blur(2px);
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* === Mobile Styles === */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: var(--spacing-md);
+            left: var(--spacing-md);
+            z-index: 1200;
+            background-color: var(--secondary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: background-color var(--transition-fast);
+        }
+
+        .mobile-toggle:hover {
+            background-color: var(--secondary-dark);
+        }
+
+        /* === Result Cards === */
+        .result-card {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            animation: fadeIn var(--transition-normal);
+            height: 100%;
+            margin-bottom: var(--spacing-xl);
+            position: relative;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle at top right, rgba(52, 152, 219, 0.1) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .result-card-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .result-badge {
+            background-color: var(--success);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(46, 204, 113, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .result-badge::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 0.7rem;
+        }
+
+        .result-card-body {
+            padding: var(--spacing-lg);
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, rgba(255,255,255,1) 100%);
+        }
+
+        .result-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: var(--spacing-md) 0;
+            background-color: rgba(240, 240, 240, 0.5);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border-left: 3px solid var(--accent);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 0 var(--spacing-md);
+        }
+
+        .stat-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 10%;
+            height: 80%;
+            width: 1px;
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .result-progress {
+            margin: var(--spacing-md) 0;
+            background-color: rgba(240, 240, 240, 0.3);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .result-progress p {
+            margin-bottom: var(--spacing-xs);
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress {
+            height: 12px;
+            background-color: var(--gray-light);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-bottom: var(--spacing-md);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary) 0%, var(--accent) 100%);
+            border-radius: var(--radius-full);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.2) 75%,
+                transparent 75%
+            );
+            background-size: 15px 15px;
+            z-index: 1;
+        }
+
+        .result-card-footer {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: center;
+            background-color: rgba(240, 240, 240, 0.2);
+        }
+
+        /* === Modal === */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-normal), visibility var(--transition-normal);
+            backdrop-filter: blur(3px);
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            transform: scale(0.9);
+            transition: transform var(--transition-normal);
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-full);
+            transition: background-color var(--transition-fast), color var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background-color: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+        }
+
+        .modal-footer {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-md);
+        }
+
+        /* Fixed cancel button in logout modal */
+        .btn-cancel {
+            background-color: var(--gray-light);
+            color: var(--gray-dark);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-cancel:hover {
+            background-color: var(--gray);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        /* === Toast Notifications === */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 0;
+            z-index: 1050;
+        }
+        
+        /* === Profile Card Container === */
+        .profile-card {
+            margin: 20px auto;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        /* Main Header: Flex to align both sides */
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Left Section: Avatar and Info */
+        .profile-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Profile Avatar */
+        .profile-avatar-large img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #ddd;
+        }
+
+        /* Profile Info */
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            margin: 0;
+            color: #333;
+        }
+
+        .profile-admission,
+        .profile-department {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Right Section: Stats */
+        .profile-stats {
+            display: flex;
+            gap: 20px;
+            justify-content: flex-end;
+        }
+
+        .profile-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 10px;
-            font-size: 0.9em;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #777;
+        }
+
+        /* === Responsive Styles === */
+        @media (max-width: 1024px) {
+            .election-cards {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 60px;
+            }
+
+            .mobile-toggle {
+                display: flex;
+            }
+
+            .notifications-panel {
+                width: 100%;
+                right: -100%;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-avatar-large {
+                margin-right: 0;
+                margin-bottom: var(--spacing-md);
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .profile-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-md);
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .nomination-tabs {
+                flex-direction: column;
+            }
+
+            .nomination-tab {
+                text-align: center;
+            }
+
+            .nomination-tab.active::after {
+                width: 50%;
+                left: 25%;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Mobile menu toggle -->
+    <button class="mobile-toggle" id="mobileToggle">
+        <i class="fas fa-bars"></i>
+    </button>
 
-    <div class="header">
-        <h1>Welcome to the Student Portal</h1>
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Notifications Panel -->
+    <div class="notifications-panel" id="notificationsPanel">
+        <div class="notifications-header">
+            <h3 class="notifications-title">Notifications</h3>
+            <button class="close-notifications" id="closeNotifications">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="notifications-tabs">
+            <div class="notifications-tab active" data-tab="all">All</div>
+            <div class="notifications-tab" data-tab="unread">Unread</div>
+        </div>
+        <div class="notifications-content">
+            <div class="notification-item unread">
+                <div class="notification-icon info">
+                    <i class="fas fa-info"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">CS Year 3 Election</div>
+                    <div class="notification-message">The election for Class Representative will end in 2 hours.</div>
+                    <div class="notification-time">
+                        <i class="far fa-clock"></i> 10 minutes ago
+                    </div>
+                </div>
+            </div>
+            <div class="notification-item unread">
+                <div class="notification-icon success">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">Nomination Approved</div>
+                    <div class="notification-message">Your nomination for ECE Year 1 Class Representative has been approved.</div>
+                    <div class="notification-time">
+                        <i class="far fa-clock"></i> 1 hour ago
+                    </div>
+                </div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-icon warning">
+                    <i class="fas fa-exclamation"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">New Election Announced</div>
+                    <div class="notification-message">A new election for EEE Department has been announced.</div>
+                    <div class="notification-time">
+                        <i class="far fa-clock"></i> 1 day ago
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="nav-buttons">
-        <button class="nav-button" onclick="window.location.href='notification.html'">Election notification</button>
-        <button class="nav-button" onclick="window.location.href='studentregistration.html'">Student Registration</button>
-        <button class="nav-button" onclick="window.location.href='nomination.html'">Nomination Submission</button>
-        <button class="nav-button" onclick="window.location.href='status.html'">Check Nomination Status</button>
-        <button class="nav-button" onclick="window.location.href='voterlist.html'">Check Voter's List</button>
-        <button class="nav-button" onclick="window.location.href='votecast.html'">Vote Casting</button>
-        <button class="nav-button" onclick="window.location.href='results.html'">results</button>
-        <button class="nav-button" onclick="window.location.href='home.html'">Logout</button>
-
+    <!-- Results Modal -->
+    <div class="modal" id="resultsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Election Results: ECE Year 1 Class Representative</h3>
+                <button class="modal-close" id="closeResultsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="nominee-info">
+                    <div class="nominee-avatar">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
+                    </div>
+                    <div class="nominee-details">
+                        <h4 class="nominee-name">Sarah Johnson (Winner)</h4>
+                        <p class="nominee-role">Class Representative</p>
+                    </div>
+                </div>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">98</span>
+                        <span class="stat-label">Total Votes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">72%</span>
+                        <span class="stat-label">Winning %</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">3</span>
+                        <span class="stat-label">Candidates</span>
+                    </div>
+                </div>
+                <h4 class="section-title">Vote Distribution</h4>
+                <div class="result-progress">
+                    <p>Sarah Johnson - 72% (98 votes)</p>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 72%"></div>
+                    </div>
+                </div>
+                <div class="result-progress">
+                    <p>Michael Brown - 18% (24 votes)</p>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 18%"></div>
+                    </div>
+                </div>
+                <div class="result-progress">
+                    <p>Emily Wilson - 10% (14 votes)</p>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 10%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="form-submit">Download Results</button>
+            </div>
+        </div>
     </div>
 
-    <div class="description">
-        <h2>About the E-Voting System</h2>
-        <p>This platform allows students to register, nominate candidates, check their nomination status, view the list of eligible voters, and cast their votes securely online. The system is designed to ensure a transparent, efficient, and easy voting process for all participants. Your participation is crucial for the democratic process within the student body.</p>
+    <!-- Logout Confirmation Modal -->
+    <div class="modal" id="logoutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Logout Confirmation</h3>
+                <button class="modal-close" id="closeLogoutModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to log out?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelLogout">Cancel</button>
+                <button class="form-submit" id="confirmLogout">Yes, Log Out</button>
+            </div>
+        </div>
     </div>
 
-    <div class="icons">
-        <div class="icon" onclick="window.location.href='notification.html'">🔔</div>
-        <div class="icon" onclick="window.location.href='student-registration.html'">📋</div>
-        <div class="icon" onclick="window.location.href='nomination.html'">🗳️</div>
-        <div class="icon" onclick="window.location.href='check-nomination-status.html'">🔍</div>
-        <div class="icon" onclick="window.location.href='voterlist.html'">👥</div>
-        <div class="icon" onclick="window.location.href='vote-casting.html'">🗳️</div>
-        <div class="icon" onclick="window.location.href='results.html'">📊</div>
-        <div class="icon" onclick="window.location.href='home.html'">🏠</div>
-        
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-vote-yea"></i>
+                    </div>
+                    <div class="logo-text">VOTE CAMPUS</div>
+                </div>
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <div class="menu-section-title">Main</div>
+                    <div class="menu-item active" data-page="home">
+                        <div class="menu-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="menu-text">Dashboard</div>
+                    </div>
+                    <div class="menu-item" data-page="elections">
+                        <div class="menu-icon">
+                            <i class="fas fa-vote-yea"></i>
+                        </div>
+                        <div class="menu-text">Elections</div>
+                        <div class="menu-badge">2</div>
+                    </div>
+                </div>
+                <div class="menu-section">
+                    <div class="menu-section-title">Nominations</div>
+                    <div class="menu-item" data-page="nominations">
+                        <div class="menu-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="menu-text">My Nominations</div>
+                    </div>
+                    <div class="menu-item" data-page="results">
+                        <div class="menu-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="menu-text">Results</div>
+                    </div>
+                </div>
+                <div class="menu-section">
+                    <div class="menu-section-title">Settings</div>
+                    <div class="menu-item" data-page="profile">
+                        <div class="menu-icon">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <div class="menu-text">Profile Settings</div>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">John Davis</div>
+                        <div class="user-batch">CS Year 3</div>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutButton" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
 
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Home Page -->
+            <div class="content-page active" id="home">
+                <div class="header">
+                    <h1 class="page-title">Student Dashboard</h1>
+                    <div class="header-actions">
+                        <button class="action-button" id="notificationsButton">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">2</span>
+                        </button>
+                        <button class="theme-toggle" id="themeToggle">
+                            <i class="fas fa-sun"></i>
+                            <span class="theme-text">Light</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Auto-scrolling text for important information -->
+                <div class="announcement-ticker">
+                    <div class="blink-dot"></div> <!-- Red blinking dot -->
+                    <div class="ticker-wrapper">
+                        <div class="ticker-content">
+                            <div class="ticker-item">🔔 Important: CS Year 3 Election ends in 2 hours!</div>
+                            <div class="ticker-item">📊 ECE Year 1 Election results are now available</div>
+                            <div class="ticker-item">🗓️ New election scheduled for EEE Department on May 15th</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Profile Card -->
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <!-- Left Section: Avatar and Info -->
+                        <div class="profile-left">
+                            <div class="profile-avatar-large">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John Davis">
+                            </div>
+                            <div class="profile-info">
+                                <h2 class="profile-name">John Davis</h2>
+                                <p class="profile-admission"></p>
+                                <p class="profile-department"></p>
+                            </div>
+                        </div>
+                
+                        <!-- Right Section: Stats -->
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <span class="stat-value">2</span>
+                                <span class="stat-label">Elections</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="stat-value">1</span>
+                                <span class="stat-label">Nominations</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="stat-value">1</span>
+                                <span class="stat-label">Votes Cast</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <!-- Elections Table -->
+                <div class="elections-table-container">
+                    <h3 class="section-title">Active Elections</h3>
+                    <table class="elections-table">
+                        <thead>
+                            <tr>
+                                <th>Election Name</th>
+                                <th>Election Role</th>
+                                <th>Starting On</th>
+                                <th>Ending On</th>
+                                <th>Participants</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CS Year 3 Election</td>
+                                <td>Class Representative</td>
+                                <td>May 1, 2023</td>
+                                <td>May 5, 2023</td>
+                                <td>3</td>
+                                <td><span class="table-badge badge-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>ECE Year 1 Election</td>
+                                <td>Class Representative</td>
+                                <td>April 25, 2023</td>
+                                <td>April 30, 2023</td>
+                                <td>3</td>
+                                <td><span class="table-badge badge-ended">Ended</span></td>
+                            </tr>
+                            <tr>
+                                <td>EEE Department Election</td>
+                                <td>Department Head</td>
+                                <td>May 15, 2023</td>
+                                <td>May 20, 2023</td>
+                                <td>2</td>
+                                <td><span class="table-badge badge-upcoming">Upcoming</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Elections Page -->
+            <div class="content-page" id="elections">
+                <div class="header">
+                    <h1 class="page-title">Elections</h1>
+                    <div class="header-actions">
+                        <button class="theme-toggle" id="themeToggleElections">
+                            <i class="fas fa-sun"></i>
+                            <span class="theme-text">Light</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="election-cards">
+                    <div class="election-card">
+                        <div class="election-card-header">
+                            CS Year 3: Class Representative
+                        </div>
+                        <div class="election-card-body">
+                            <div class="nominee-info">
+                                <div class="nominee-avatar">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John Davis">
+                                </div>
+                                <div class="nominee-details">
+                                    <h4 class="nominee-name">John Davis</h4>
+                                    <p class="nominee-role">Class Representative</p>
+                                </div>
+                            </div>
+                            <div class="nominee-description">
+                                I believe I can represent our class effectively by being a strong voice for student concerns. With my experience in organizing events and my commitment to inclusivity, I will work to create a better learning environment for everyone.
+                            </div>
+                            <div class="election-details">
+                                <div class="election-detail">
+                                    <span class="detail-label">Election Name:</span>
+                                    <span class="detail-value">CS Year 3 Election</span>
+                                </div>
+                                <div class="election-detail">
+                                    <span class="detail-label">Ends In:</span>
+                                    <span class="detail-value">2 hours</span>
+                                </div>
+                                <div class="election-detail">
+                                    <span class="detail-label">Venue:</span>
+                                    <span class="detail-value">CS Department</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="election-card-footer">
+                            <button class="vote-button" id="voteButton2">Vote</button>
+                        </div>
+                    </div>
+
+                    <div class="election-card">
+                        <div class="election-card-header">
+                            ECE Year 1: Class Representative
+                        </div>
+                        <div class="election-card-body">
+                            <div class="nominee-info">
+                                <div class="nominee-avatar">
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
+                                </div>
+                                <div class="nominee-details">
+                                    <h4 class="nominee-name">Sarah Johnson</h4>
+                                    <p class="nominee-role">Class Representative</p>
+                                </div>
+                            </div>
+                            <div class="nominee-description">
+                                As your representative, I will focus on improving communication between students and faculty. I'm passionate about creating study groups and ensuring everyone has access to resources they need to succeed in our program.
+                            </div>
+                            <div class="election-details">
+                                <div class="election-detail">
+                                    <span class="detail-label">Election Name:</span>
+                                    <span class="detail-value">ECE Year 1 Election</span>
+                                </div>
+                                <div class="election-detail">
+                                    <span class="detail-label">Ends In:</span>
+                                    <span class="detail-value">1 day</span>
+                                </div>
+                                <div class="election-detail">
+                                    <span class="detail-label">Venue:</span>
+                                    <span class="detail-value">ECE Department</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="election-card-footer">
+                            <button class="vote-button voted" disabled>Voted</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nominations Page -->
+            <div class="content-page" id="nominations">
+                <div class="header">
+                    <h1 class="page-title">My Nominations</h1>
+                    <div class="header-actions">
+                        <button class="theme-toggle" id="themeToggleNominations">
+                            <i class="fas fa-sun"></i>
+                            <span class="theme-text">Light</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="nomination-container">
+                    <div class="nomination-tabs">
+                        <div class="nomination-tab active" data-tab="request">Nomination Request</div>
+                        <div class="nomination-tab" data-tab="approved">Nomination Status</div>
+                    </div>
+                    <div class="nomination-content">
+                        <!-- Nomination Request Tab -->
+                        <div class="tab-content active" id="requestTab">
+                            <div class="nomination-form">
+                                <form id="nominationForm">
+                                    <div class="form-group">
+                                        <label class="form-label" for="electionSelect">Select Election</label>
+                                        <select class="form-control" id="electionSelect">
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="positionSelect">Position</label>
+                                        <select class="form-control" id="positionSelect">
+                                            <option value="">-- Select Position --</option>
+                                            <option value="class-rep">Class Representative</option>
+                                            <option value="sports-sec">Sports Secretary</option>
+                                            <option value="cultural-sec">Cultural Secretary</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="nominationStatement">Statement</label>
+                                        <textarea class="form-control" id="nominationStatement" rows="4" placeholder="Why do you want to be nominated for this position?"></textarea>
+                                        <small class="form-text">Briefly describe why you are a good fit for this position (max 200 words)</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Do you have backlogs?</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="hasBacklogs" id="noBacklogs" value="no" checked>
+                                            <label class="form-check-label" for="noBacklogs">No</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="hasBacklogs" id="yesBacklogs" value="yes">
+                                            <label class="form-check-label" for="yesBacklogs">Yes</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group conditional-field" id="backlogsField">
+                                        <label class="form-label" for="backlogsCount">Number of Backlogs</label>
+                                        <input type="number" class="form-control" id="backlogsCount" min="1" placeholder="Enter number of backlogs">
+                                    </div>
+                                    <button type="submit" class="form-submit">Submit Nomination</button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- Nomination Status Tab -->
+                        <div class="tab-content" id="approvedTab">
+                            <div class="nomination-status-cards" id="nominationCards">
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Page -->
+            <div class="content-page" id="results">
+                <div class="header">
+                    <h1 class="page-title">Election Results</h1>
+                    <div class="header-actions">
+                        <button class="theme-toggle" id="themeToggleResults">
+                            <i class="fas fa-sun"></i>
+                            <span class="theme-text">Light</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-card-header">
+                        <h3>ECE Year 1: Class Representative Results</h3>
+                        <span class="result-badge">Completed</span>
+                    </div>
+                    <div class="result-card-body">
+                        <div class="nominee-info">
+                            <div class="nominee-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
+                            </div>
+                            <div class="nominee-details">
+                                <h4 class="nominee-name">Sarah Johnson (Winner)</h4>
+                                <p class="nominee-role">Class Representative</p>
+                            </div>
+                        </div>
+                        <div class="result-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">98</span>
+                                <span class="stat-label">Total Votes</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">72%</span>
+                                <span class="stat-label">Winning %</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">5 days ago</span>
+                                <span class="stat-label">Election Ended</span>
+                            </div>
+                        </div>
+                        <div class="result-progress">
+                            <p>Vote Distribution</p>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 72%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-card-footer">
+                        <button class="vote-button" id="viewResultsButton" style="background-color: var(--accent);">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Settings Page -->
+            <div class="content-page" id="profile">
+                <div class="header">
+                    <h1 class="page-title">Profile Settings</h1>
+                    <div class="header-actions">
+                        <button class="theme-toggle" id="themeToggleProfile">
+                            <i class="fas fa-sun"></i>
+                            <span class="theme-text">Light</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="profile-management">
+                    <h3 class="section-title">Manage Your Information</h3>
+                    <form id="profileForm" class="profile-form">
+                        <div class="form-group">
+                            <label class="form-label" for="profileName">Full Name</label>
+                            <input type="text" class="form-control" id="profileName" value="John Davis">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profileEmail">Email</label>
+                            <input type="email" class="form-control" id="profileEmail" value="john.davis@example.com" disabled>
+                            <small class="form-text">Email cannot be changed</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profileAdmission">Admission Number</label>
+                            <input type="text" class="form-control" id="profileAdmission" value="CS2021032" disabled>
+                            <small class="form-text">Admission number cannot be changed</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profileDepartment">Department</label>
+                            <input type="text" class="form-control" id="profileDepartment" value="Computer Science" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profileYear">Year</label>
+                            <input type="text" class="form-control" id="profileYear" value="3" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profilePhone">Phone Number</label>
+                            <input type="tel" class="form-control" id="profilePhone" value="123-456-7890">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profilePassword">Change Password</label>
+                            <input type="password" class="form-control" id="profilePassword" placeholder="Enter new password">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profileConfirmPassword">Confirm Password</label>
+                            <input type="password" class="form-control" id="profileConfirmPassword" placeholder="Confirm new password">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profilePhoto">Profile Photo</label>
+                            <input type="file" class="form-control" id="profilePhoto">
+                            <small class="form-text">Upload a new profile photo (JPEG or PNG, max 2MB)</small>
+                        </div>
+                    </form>
+                    <div class="profile-actions">
+                        <button class="btn-cancel">Cancel</button>
+                        <button class="form-submit" id="saveProfileBtn">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="footer">
-        <p>&copy; 2025 E-Voting System. All Rights Reserved.</p>
-    </div>
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+    <script src="authentication.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            protectPage("Student");
+            getStudentDetailsOnLoad();
+            getAllElectionDropdown();
+            // Menu functionality
+            const menuItems = document.querySelectorAll('.menu-item');
+            const contentPages = document.querySelectorAll('.content-page');
+            const mobileToggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const toggleSidebar = document.getElementById('toggleSidebar');
+            const notificationsButton = document.getElementById('notificationsButton');
+            const notificationsPanel = document.getElementById('notificationsPanel');
+            const closeNotifications = document.getElementById('closeNotifications');
+            const themeToggles = document.querySelectorAll('.theme-toggle');
+            const nominationTabs = document.querySelectorAll('.nomination-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const voteButton2 = document.getElementById('voteButton2');
+            const saveProfileBtn = document.getElementById('saveProfileBtn');
+            const viewResultsButton = document.getElementById('viewResultsButton');
+            const resultsModal = document.getElementById('resultsModal');
+            const closeResultsModal = document.getElementById('closeResultsModal');
+            const logoutButton = document.getElementById('logoutButton');
+            const logoutModal = document.getElementById('logoutModal');
+            const closeLogoutModal = document.getElementById('closeLogoutModal');
+            const cancelLogout = document.getElementById('cancelLogout');
+            const confirmLogout = document.getElementById('confirmLogout');
+            
+            // Backlogs conditional field
+            const hasBacklogsRadios = document.querySelectorAll('input[name="hasBacklogs"]');
+            const backlogsField = document.getElementById('backlogsField');
+            
+            hasBacklogsRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'yes') {
+                        backlogsField.classList.add('active');
+                    } else {
+                        backlogsField.classList.remove('active');
+                    }
+                });
+            });
 
+            // Toggle sidebar on mobile
+            mobileToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+            
+            // Close sidebar when clicking overlay
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('active');
+                notificationsPanel.classList.remove('active');
+                resultsModal.classList.remove('active');
+                logoutModal.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            // Toggle sidebar collapse
+            toggleSidebar.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                if (sidebar.classList.contains('collapsed')) {
+                    toggleSidebar.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                } else {
+                    toggleSidebar.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                }
+            });
+            
+            // Toggle notifications panel
+            notificationsButton.addEventListener('click', function() {
+                notificationsPanel.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+            
+            // Close notifications panel
+            closeNotifications.addEventListener('click', function() {
+                notificationsPanel.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            // Toggle dark/light theme
+            themeToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    document.body.classList.toggle('dark-mode');
+                    
+                    if (document.body.classList.contains('dark-mode')) {
+                        themeToggles.forEach(t => {
+                            t.innerHTML = '<i class="fas fa-moon"></i><span class="theme-text">Dark</span>';
+                        });
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        themeToggles.forEach(t => {
+                            t.innerHTML = '<i class="fas fa-sun"></i><span class="theme-text">Light</span>';
+                        });
+                        localStorage.setItem('theme', 'light');
+                    }
+                });
+            });
+            
+            // Handle menu item clicks
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Update active menu item
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    const pageId = this.getAttribute('data-page');
+                    contentPages.forEach(page => {
+                        page.classList.remove('active');
+                        if (page.id === pageId) {
+                            page.classList.add('active');
+                        }
+                    });
+                    
+                    // Close sidebar on mobile after selection
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Nomination tabs
+            nominationTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabContainer = this.closest('.nomination-tabs');
+                    const contentContainer = tabContainer.nextElementSibling;
+                    
+                    // Update active tab
+                    tabContainer.querySelectorAll('.nomination-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    const tabId = this.getAttribute('data-tab');
+                    contentContainer.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId + 'Tab') {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Vote button functionality
+            if (voteButton2) {
+                voteButton2.addEventListener('click', function() {
+                    Swal.fire({
+                        title: 'Confirm Vote',
+                        text: 'Are you sure you want to vote for John Davis as Class Representative?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e67e22',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, vote!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.textContent = 'Voted';
+                            this.classList.add('voted');
+                            this.disabled = true;
+                            showToast('Your vote has been recorded successfully!', 'success');
+                        }
+                    });
+                });
+            }
+            
+            // View Results Modal
+            if (viewResultsButton) {
+                viewResultsButton.addEventListener('click', function() {
+                    resultsModal.classList.add('active');
+                    overlay.classList.add('active');
+                });
+            }
+            
+            // Close Results Modal
+            if (closeResultsModal) {
+                closeResultsModal.addEventListener('click', function() {
+                    resultsModal.classList.remove('active');
+                    overlay.classList.remove('active'); 
+                    resultsModal.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
+            
+            // Logout button functionality
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function() {
+                    logoutModal.classList.add('active');
+                    overlay.classList.add('active');
+                });
+            }
+            
+            // Close Logout Modal
+            if (closeLogoutModal) {
+                closeLogoutModal.addEventListener('click', function() {
+                    logoutModal.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
+            
+            // Cancel Logout
+            if (cancelLogout) {
+                cancelLogout.addEventListener('click', function() {
+                    logoutModal.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
+            
+            // Confirm Logout
+            if (confirmLogout) {
+                confirmLogout.addEventListener('click', function() {
+                    showToast('You have been logged out successfully!', 'success');
+                    // In a real application, this would redirect to a login page
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 1500);
+                });
+            }
+            
+            // Save profile
+            if (saveProfileBtn) {
+                saveProfileBtn.addEventListener('click', function() {
+                    showToast('Profile updated successfully!', 'success');
+                });
+            }
+            
+        const nominationForm = document.getElementById('nominationForm');
+
+        if (nominationForm) {
+            nominationForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const electionId = document.getElementById('electionSelect').value;
+                const nominatedPosition = document.getElementById('positionSelect').value;
+                const nomineeStatement = document.getElementById('nominationStatement').value.trim();
+                const hasBacklogs = document.getElementById('yesBacklogs').checked;
+                const backlogNumber = hasBacklogs ? parseInt(document.getElementById('backlogsCount').value) : 0;
+                const nomineeId = localStorage.getItem('userId'); 
+
+                if (!electionId || !nominatedPosition || !nomineeStatement) {
+                    showToast(' Please fill all required fields!', 'danger');
+                    return;
+                }
+
+                if (hasBacklogs && (!backlogNumber || backlogNumber < 1)) {
+                    showToast('Please enter a valid number of backlogs!', 'danger');
+                    return;
+                }
+
+                const nominationData = {
+                    nomineeId: nomineeId,
+                    nominatedElection: electionId,
+                    nominatedPosition: nominatedPosition,
+                    nomineeStatement: nomineeStatement,
+                    isBacklog: hasBacklogs,
+                    backlogNumber: hasBacklogs ? backlogNumber : 0
+                };
+
+                try {
+                    const response = await fetch("http://localhost:3000/api/nomination/sent-nomination", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(nominationData)
+                    });
+
+                    if (response.ok) {
+                        showToast(' Nomination submitted successfully!', 'success');
+                        nominationForm.reset();
+                        document.getElementById('backlogsField').classList.remove('active');
+                        refreshNominationCards();
+                    } else {
+                        const errorData = await response.json();
+                        showToast(` Error: ${errorData.error || 'Failed to submit nomination'}`, 'danger');
+                    }
+                } catch (error) {
+                    console.error("Error submitting nomination:", error);
+                    showToast(' An error occurred while submitting the nomination. Try again later.', 'danger');
+                }
+            });
+        }
+
+        async function refreshNominationCards() {
+            const userId = localStorage.getItem('userId'); 
+            if (!userId) {
+                console.error("User ID not found!");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/nomination/get-user-nomination/${userId}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch updated nominations");
+                }
+
+                const updatedNominations = await response.json();
+                renderNominationCards(updatedNominations);
+            } catch (err) {
+                console.error("Error refreshing nominations:", err.message);
+            }
+        }
+
+
+            
+            const profileForm = document.getElementById('profileForm');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    showToast('Profile updated successfully!', 'success');
+                });
+            }
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeToggles.forEach(t => {
+                    t.innerHTML = '<i class="fas fa-moon"></i><span class="theme-text">Dark</span>';
+                });
+            }
+        });
+
+        // Toast notification function
+        function showToast(message, type) {
+            const toastContainer = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.className = `toast align-items-center text-bg-${type} border-0 show`;
+            toast.setAttribute("role", "alert");
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Auto remove toast after 3 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+    <script src="student.js"></script>
 </body>
 </html>

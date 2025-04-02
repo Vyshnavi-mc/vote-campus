@@ -7,8 +7,21 @@ const { ObjectId } = mongoose.Types; // Import ObjectId
 
 const registerUser = async (req, res) => {
     try {
-        const { userFullName, userEmail, signUpRole, departmentRef, studentAdmissionNumber, batchRef,facultyBatchRef, password, secretCode, isTutor } = req.body;
+        const { 
+            userFullName, 
+            userEmail, 
+            signUpRole, 
+            departmentRef, 
+            studentAdmissionNumber, 
+            batchRef, 
+            facultyBatchRef, 
+            password, 
+            secretCode, 
+            isTutor 
+        } = req.body;
+
         console.log(isTutor);
+
         if (!userEmail) {
             return res.status(400).json({ error: "Email required" });
         }
@@ -34,28 +47,22 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ error: "Email already registered" });
         }
 
-        let departmentId = departmentRef;
-        if (!ObjectId.isValid(departmentRef)) {
-            return res.status(400).json({ error: "Invalid department reference" });
-        } else {
+        let departmentId = null;
+        if (signUpRole !== "Admin") {
+            if (!ObjectId.isValid(departmentRef)) {
+                return res.status(400).json({ error: "Invalid department reference" });
+            }
             departmentId = new ObjectId(departmentRef);
         }
 
-        let batchId = batchRef;
-        if (batchRef && batchRef !== "Select year...") {
-            if (!ObjectId.isValid(batchRef)) {
+        let batchId = null;
+        if (signUpRole === "Student") {
+            if (batchRef && batchRef !== "Select year..." && !ObjectId.isValid(batchRef)) {
                 return res.status(400).json({ error: "Invalid batch reference" });
             }
-            batchId = new ObjectId(batchRef);
-        } else {
-            batchId = null;
-        }
-
-        batchId = '';
-        if(signUpRole === 'Student'){
-            batchId = batchRef
-        }else{
-            batchId = facultyBatchRef
+            batchId = batchRef ? new ObjectId(batchRef) : null;
+        } else if (signUpRole === "Faculty") {
+            batchId = facultyBatchRef ? new ObjectId(facultyBatchRef) : null;
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -67,7 +74,7 @@ const registerUser = async (req, res) => {
             signUpRole,
             departmentRef: departmentId,
             studentAdmissionNumber,
-            batchRef: batchId, 
+            batchRef: batchId,
             secretCode,
             isTutor
         });

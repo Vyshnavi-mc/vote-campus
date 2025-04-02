@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     departmentRef: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "department",
-        required: true,
+        required: function () { return this.signUpRole === "Student" || this.signUpRole === "Faculty"; } 
     },
     studentAdmissionNumber: {
         type: String,

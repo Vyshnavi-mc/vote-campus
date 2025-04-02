@@ -577,7 +577,7 @@ async function getAllElection() {
                         <td>${nomination.backlogNumber || '0'}</td>
                         <td>
                             <div class="table-actions">
-                                <button class="table-action approve" onclick="approveNomination('${nomination._id}', '${nomination.nomineeName.userFullName}')">
+                                <button class="table-action approve" onclick="approveNomination('${nomination._id}', '${nomination.nomineeName.userFullName}', '${nomination.nomineeName.id}')">
                                     <i class="fas fa-check"></i>
                                 </button>
                                 <button class="table-action reject" onclick="rejectNomination('${nomination._id}', '${nomination.nomineeName.userFullName}')">

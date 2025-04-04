@@ -577,7 +577,7 @@ async function getAllElection() {
                         <td>${nomination.backlogNumber || '0'}</td>
                         <td>
                             <div class="table-actions">
-                                <button class="table-action approve" onclick="approveNomination('${nomination._id}', '${nomination.nomineeName.userFullName}', '${nomination.nomineeName.id}')">
+                                <button class="table-action approve" onclick="approveNomination('${nomination._id}', '${nomination.nomineeName.userFullName}', '${nomination.nomineeName._id}','${nomination.nomineeElection}')">
                                     <i class="fas fa-check"></i>
                                 </button>
                                 <button class="table-action reject" onclick="rejectNomination('${nomination._id}', '${nomination.nomineeName.userFullName}')">
@@ -642,6 +642,74 @@ async function getAllElection() {
                 tableBody.innerHTML += row;
             });
         }
+
+        async function startElection(electionId) {
+            const confirmation = await Swal.fire({
+                title: "Are you sure?",
+                text: "Once started, voting will be completed after the configured duration.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Start Election",
+            });
+        
+            if (confirmation.isConfirmed) {
+                try {
+                    const response = await fetch(`http://localhost:3000/api/election/start-election/${electionId}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                    });
+        
+                    const data = await response.json();
+        
+                    if (response.ok) {
+                        showToast(data.message, "success");
+                        setTimeout(() => location.reload(), 1000); // Refresh the page after success
+                    } else {
+                        showToast(data.message || "Error starting election", "danger");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast("An error occurred while starting the election.", "danger");
+                }
+            }
+        }
+        
+
+        async function terminateElection(electionId) {
+            const confirmation = await Swal.fire({
+                title: "Are you sure?",
+                text: "Once Terminated, voting will be ended!",
+                icon: "error",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Terminate Election",
+            });
+        
+            if (confirmation.isConfirmed) {
+                try {
+                    const response = await fetch(`http://localhost:3000/api/election/terminate-election/${electionId}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                    });
+        
+                    const data = await response.json();
+        
+                    if (response.ok) {
+                        showToast(data.message, "success");
+                    } else {
+                        showToast(data.message || "Error starting election", "danger");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast("An error occurred while starting the election.", "danger");
+                }
+            }
+        }
+        
+        
 
 
 

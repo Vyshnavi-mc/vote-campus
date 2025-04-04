@@ -303,3 +303,171 @@ function formatDate(dateString) {
         day: "numeric",
     });
 }
+
+
+async function loadCurrentElectionForVoting() {
+    try {
+        const response = await fetch('http://localhost:3000/api/election/get-started-election');
+        if (!response.ok) throw new Error("Failed to fetch elections");
+
+        const elections = await response.json();
+        const electionContainer = document.querySelector('.election-cards');
+        electionContainer.innerHTML = ''; // Clear previous data
+
+        if (!elections || elections.length === 0) {
+            electionContainer.innerHTML = '<p class="no-elections">No ongoing elections.</p>';
+            return;
+        }
+
+        elections.forEach(election => {
+            if (election.isTerminated) return; // 🔹 Skip terminated elections
+
+            const card = document.createElement('div');
+            card.classList.add('election-card');
+
+            card.innerHTML = `
+                <div class="election-card-header">
+                    ${election.electionName} (${election.electionRole})
+                </div>
+                <div class="election-card-body">
+                    <div class="election-details">
+                        <div class="election-detail">
+                            <span class="detail-label">Election Name:</span>
+                            <span class="detail-value">${election.electionName}</span>
+                        </div>
+                        <div class="election-detail">
+                            <span class="detail-label">Ends In:</span>
+                            <span class="detail-value" id="timer-${election._id}"></span>
+                        </div>
+                        <div class="election-detail">
+                            <span class="detail-label">Venue:</span>
+                            <span class="detail-value">${election.electionVenue}</span>
+                        </div>
+                    </div>
+
+                    <div class="nominee-container">
+                        <h4>Nominees</h4>
+                        <div class="nominee-list" id="nominee-list-${election._id}"></div>
+                    </div>
+                </div>
+            `;
+
+            electionContainer.appendChild(card);
+
+            // 🔹 Populate nominees
+            const nomineeList = document.getElementById(`nominee-list-${election._id}`);
+            if (election.electionNominee.length > 0) {
+                election.electionNominee.forEach(nominee => {
+                    const nomineeCard = document.createElement('div');
+                    nomineeCard.classList.add('nominee-info');
+                    nomineeCard.innerHTML = `
+                        <div class="nominee-avatar">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="${nominee.nomineeId?.userFullName || 'Unknown'}">
+                        </div>
+                        <div class="nominee-details">
+                            <h5 class="nominee-name">${nominee.nomineeName.userFullName || 'Unknown'}</h5>
+                            <p class="nominee-role">${nominee.nominationId?.nominatedRole || 'Candidate'}</p>
+                        </div>
+                        <div class="nominee-description" style="margin-top:0px;">
+                            ${nominee.nominationId?.nomineeStatement || 'No statement provided'}
+                        </div>
+                        <div class="election-card-footer">
+                            <button class="vote-button" 
+                                onclick="castVote('${nominee._id}', '${election._id}', '${nominee.nomineeName?.userFullName}')">
+                                Vote
+                            </button>
+
+                        </div>
+                    `;
+                    nomineeList.appendChild(nomineeCard); // ✅ Append nominees correctly
+                });
+            } else {
+                nomineeList.innerHTML = "<p class='no-nominees'>No nominees yet.</p>";
+            }
+
+            // 🔹 Start real-time countdown
+            const timerElement = document.getElementById(`timer-${election._id}`);
+            calculateRemainingTime(election.electionTo, timerElement, election._id);
+        });
+
+    } catch (error) {
+        console.error("Error loading elections:", error);
+        document.querySelector('.election-cards').innerHTML = '<p class="no-elections">No ongoing elections.</p>';
+    }
+}
+
+
+// 🔹 Automatically refresh elections every 10 seconds
+setInterval(loadCurrentElectionForVoting, 60000);
+
+function calculateRemainingTime(electionEndTime, element, electionId) {
+    let interval;
+
+    function updateTime() {
+        const now = new Date().getTime();
+        const endTime = new Date(electionEndTime).getTime();
+        const diff = endTime - now;
+
+        if (diff <= 0) {
+            element.innerText = "Election ended";
+            clearInterval(interval); // Stop countdown when election ends
+
+            // 🔹 Refresh the UI immediately when an election ends
+            setTimeout(loadCurrentElectionForVoting, 3000);
+            return;
+        }
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        element.innerText = `${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateTime();
+    interval = setInterval(updateTime, 1000);
+}
+
+async function castVote(nomineeId, electionId, nomineeName) {
+    const confirmation = await Swal.fire({
+        title: "Confirm Vote",
+        text: `Are you sure you want to vote for ${nomineeName}?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Yes, Vote!",
+    });
+
+    if (confirmation.isConfirmed) {
+        try {
+            const response = await fetch(`http://localhost:3000/api/election/cast-vote/${electionId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nomineeId, userId: localStorage.getItem('userId') }) 
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                showToast( data.message, "success");
+            } else {
+                showToast( data.message || "Voting failed", "danger");
+            }
+        } catch (err) {
+            console.error(err);
+            showToast("An error occurred while casting your vote.", "danger");
+        }
+    }
+}
+
+
+// Function to update the UI with the new vote count
+function updateVoteCount(nomineeId, newVoteCount) {
+    const nomineeElement = document.querySelector(`#nominee-${nomineeId} .vote-count`);
+    if (nomineeElement) {
+        nomineeElement.innerText = `Votes: ${newVoteCount}`;
+    }
+}
+
+

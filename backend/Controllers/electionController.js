@@ -26,6 +26,7 @@ const addElection = async (req, res) => {
                     electionTo,
                     electionDuty: electionDutyObj,
                     electionVenue,
+                    
                 },
                 { new: true, runValidators: true }
             );
@@ -54,23 +55,32 @@ const addElection = async (req, res) => {
 
 
 
-const getAllElection = async(req,res)=>{
-    try{
+const getAllElection = async (req, res) => {
+    try {
         const electionList = await electionModel.find({ isDeleted: { $ne: true } })
-        .populate({
-            path: 'electionBatch',   // Populate batch to get batch details
-            select: 'batchName'     // Only get batchName if needed
-        })
-        .populate({
-            path: 'electionDuty',    // Populate electionDuty to get user details
-            select: 'userFullName'  // Only get userFullName if needed
-        });;
-        return res.status(200).json(electionList);
+            .populate({
+                path: 'electionBatch',   // Populate batch details
+                select: 'batchName'
+            })
+            .populate({
+                path: 'electionDuty',    // Populate user details
+                select: 'userFullName'
+            })
+            .lean(); // Converts Mongoose document to plain JavaScript object
 
-    }catch(err){
+        // ✅ Add isElectionOver dynamically
+        const updatedElections = electionList.map(election => ({
+            ...election,
+            isElectionOver: election.electionTo < new Date() // Check if election is over
+        }));
+
+        return res.status(200).json(updatedElections);
+
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
-}
+};
+
 
 const deleteElection = async(req,res)=>{
     const{id} = req.params;
@@ -232,21 +242,196 @@ const facultyApproveOrReject = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+const startElectionFlag = async (req, res) => {
+    const { id } = req.params;
 
-const startElectionFlag  = async (req,res)=>{
-    const {id} = req.params;
-    try{
-        const electionObj = await electionModel.findById(id);
-        if(!electionObj){
-            return res.status(404).json({message : 'Cannot fetch election object'});
+    try {
+        const electionObj = await electionModel
+            .findById(id)
+            .populate({
+                path: 'electionNominee',
+                populate: {
+                    path: 'nominationId', // Fetch nomination details
+                    select: 'nomineeStatement nominatedRole'
+                }
+            });
+
+        if (!electionObj) {
+            return res.status(404).json({ message: "Cannot fetch election object" });
         }
 
-    }catch(err){
-        return res.status(500).json({error : err.message})
+        // Check if election is already terminated
+        if (electionObj.isTerminated) {
+            return res.status(400).json({ message: "Election has already been terminated" });
+        }
+
+        // Check if election is already started
+        if (electionObj.electionInitiate) {
+            return res.status(400).json({ message: "Election already started" });
+        }
+
+        // ✅ Ensure at least 2 valid nominees with nominationId exist
+        const validNominees = electionObj.electionNominee.filter(nominee => nominee.nominationId);
+        if (validNominees.length < 2) {
+            return res.status(400).json({ message: "At least 2 nominees are required to start the election." });
+        }
+
+        // Start the election
+        electionObj.electionInitiate = true;
+        await electionObj.save();
+
+        return res.status(200).json({ message: "Election has been started. Voting will be completed after the configured duration" });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+};
+
+
+const terminateElectionFlag = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const electionObj = await electionModel.findById(id);
+
+        if (!electionObj) {
+            return res.status(404).json({ message: "Cannot fetch election object" });
+        }
+
+        // Check if election is already terminated
+        if (electionObj.isTerminated) {
+            return res.status(400).json({ message: "Election has already been terminated" });
+        }
+
+        // Start the election
+        electionObj.isTerminated = true;
+        await electionObj.save();
+
+        return res.status(200).json({ message: "Election has been Terminated. You can now publish results!" });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+};
+
+
+const getAllStartedElection = async (req, res) => {
+    try {
+        const data = await electionModel
+            .find({ electionInitiate: true, isDeleted: { $ne: true }, isTerminated: { $ne: true } })
+            .populate({
+                path: 'electionNominee',
+                populate: [
+                    {
+                        path: 'nomineeName', // Fetch user details
+                        select: 'userFullName batchRef studentAdmissionNumber'
+                    },
+                    {
+                        path: 'nominationId', // Fetch nomination details
+                        select: 'nomineeStatement nominatedRole'
+                    }
+                ]
+            });
+
+        if (!data || data.length === 0) {
+            return res.status(400).json([]);
+        }
+
+        return res.status(200).json(data);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+};
+
+async function checkAndTerminateElections() {
+    try {
+        const now = new Date();
+
+        // Find elections that have ended but are not terminated
+        const expiredElections = await electionModel.find({
+            electionTo: { $lt: now },
+            isTerminated: { $ne: true }
+        });
+
+        if (expiredElections.length > 0) {
+            await electionModel.updateMany(
+                { electionTo: { $lt: now }, isTerminated: { $ne: true } },
+                { $set: { isTerminated: true } }
+            );
+            console.log(`✅ Marked ${expiredElections.length} elections as terminated.`);
+        }
+    } catch (err) {
+        console.error("❌ Error updating elections:", err);
     }
 }
 
+// Run this check every 10 seconds
+setInterval(checkAndTerminateElections, 10000);
 
+
+const castVote = async (req, res) => {
+    try {
+        const { id } = req.params; // Election ID
+        const { nomineeId, userId } = req.body; // Nominee ID & Voter ID
+
+        // 1️⃣ Find the election
+        const election = await electionModel.findById(id);
+        if (!election) {
+            return res.status(404).json({ message: "Election not found." });
+        }
+
+        // 2️⃣ Check if election is ongoing
+        if (!election.electionInitiate || election.isTerminated) {
+            return res.status(400).json({ message: "Voting is not allowed at this time." });
+        }
+
+        // 3️⃣ Find the nominee in the election
+        const nominee = election.electionNominee.find(n => n._id.toString() === nomineeId);
+        if (!nominee) {
+            return res.status(400).json({ message: "Nominee not found." });
+        }
+
+        // 4️⃣ Check if the user has already voted for this nominee
+        if (nominee.votes.includes(userId)) {
+            return res.status(400).json({ message: "You have already voted for this nominee." });
+        }
+
+        // 5️⃣ Add the user's vote to the nominee
+        nominee.votes.push(userId);
+
+        // 6️⃣ Track total votes the user has cast
+        const userVoteEntry = election.votesCastByUser.find(entry => entry.userId.toString() === userId);
+        if (userVoteEntry) {
+            userVoteEntry.voteCount += 1;
+        } else {
+            election.votesCastByUser.push({ userId, voteCount: 1 });
+        }
+
+        // 7️⃣ Save election document
+        await election.save();
+
+        // 8️⃣ Send response with updated vote count
+        return res.status(200).json({ 
+            message: "Vote cast successfully!",
+            totalVotesForNominee: nominee.votes.length
+        });
+
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+
+const getRunningElection = async (req,res) =>{
+    try {
+        const runningElections = await electionModel.find({ 
+            electionInitiate: true, 
+            isTerminated: {$ne:true} 
+        }).populate('electionNominee.nomineeName', 'userFullName'); 
+
+        res.status(200).json(runningElections);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
 
 
@@ -260,5 +445,10 @@ module.exports={
     getApprovedElectionList,
     getFacultyApproveList,
     facultyApproveOrReject,
-    startElectionFlag
+    startElectionFlag,
+    terminateElectionFlag,
+    getAllStartedElection,
+    checkAndTerminateElections,
+    castVote,
+    getRunningElection
 };

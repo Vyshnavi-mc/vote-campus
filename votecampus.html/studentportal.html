@@ -2013,6 +2013,8 @@
                 left: 25%;
             }
         }
+
+        
     </style>
 </head>
 <body>
@@ -2347,79 +2349,7 @@
                 </div>
                 
                 <div class="election-cards">
-                    <div class="election-card">
-                        <div class="election-card-header">
-                            CS Year 3: Class Representative
-                        </div>
-                        <div class="election-card-body">
-                            <div class="nominee-info">
-                                <div class="nominee-avatar">
-                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John Davis">
-                                </div>
-                                <div class="nominee-details">
-                                    <h4 class="nominee-name">John Davis</h4>
-                                    <p class="nominee-role">Class Representative</p>
-                                </div>
-                            </div>
-                            <div class="nominee-description">
-                                I believe I can represent our class effectively by being a strong voice for student concerns. With my experience in organizing events and my commitment to inclusivity, I will work to create a better learning environment for everyone.
-                            </div>
-                            <div class="election-details">
-                                <div class="election-detail">
-                                    <span class="detail-label">Election Name:</span>
-                                    <span class="detail-value">CS Year 3 Election</span>
-                                </div>
-                                <div class="election-detail">
-                                    <span class="detail-label">Ends In:</span>
-                                    <span class="detail-value">2 hours</span>
-                                </div>
-                                <div class="election-detail">
-                                    <span class="detail-label">Venue:</span>
-                                    <span class="detail-value">CS Department</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="election-card-footer">
-                            <button class="vote-button" id="voteButton2">Vote</button>
-                        </div>
-                    </div>
-
-                    <div class="election-card">
-                        <div class="election-card-header">
-                            ECE Year 1: Class Representative
-                        </div>
-                        <div class="election-card-body">
-                            <div class="nominee-info">
-                                <div class="nominee-avatar">
-                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
-                                </div>
-                                <div class="nominee-details">
-                                    <h4 class="nominee-name">Sarah Johnson</h4>
-                                    <p class="nominee-role">Class Representative</p>
-                                </div>
-                            </div>
-                            <div class="nominee-description">
-                                As your representative, I will focus on improving communication between students and faculty. I'm passionate about creating study groups and ensuring everyone has access to resources they need to succeed in our program.
-                            </div>
-                            <div class="election-details">
-                                <div class="election-detail">
-                                    <span class="detail-label">Election Name:</span>
-                                    <span class="detail-value">ECE Year 1 Election</span>
-                                </div>
-                                <div class="election-detail">
-                                    <span class="detail-label">Ends In:</span>
-                                    <span class="detail-value">1 day</span>
-                                </div>
-                                <div class="election-detail">
-                                    <span class="detail-label">Venue:</span>
-                                    <span class="detail-value">ECE Department</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="election-card-footer">
-                            <button class="vote-button voted" disabled>Voted</button>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
 
@@ -2623,6 +2553,7 @@
             protectPage("Student");
             getStudentDetailsOnLoad();
             getAllElectionDropdown();
+            loadCurrentElectionForVoting();
             // Menu functionality
             const menuItems = document.querySelectorAll('.menu-item');
             const contentPages = document.querySelectorAll('.content-page');

@@ -2133,7 +2133,7 @@
 
         
         // Nomination management functions
-        async function approveNomination(id, name, nomineeId) {
+        async function approveNomination(id, name, nomineeId,electionId) {
             const confirmation = await Swal.fire({
                 title: 'Are you sure?',
                 text: `You are about to approve ${name}'s nomination.`,
@@ -2157,7 +2157,8 @@
                         body: JSON.stringify({
                             status: 'approve',
                             rejectedBy: userId,
-                            nomineeId: nomineeId
+                            nomineeId: nomineeId,
+                            electionId:electionId
                         })
                     });
 

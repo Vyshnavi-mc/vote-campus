@@ -93,41 +93,50 @@ const fetchUserNominations = async (req, res) => {
 
 const approveOrRejectNomination = async (req, res) => {
     const { id } = req.params;
-    const { status, rejectReason, rejectedBy } = req.body;
+    const { status, rejectReason, rejectedBy, nomineeId, electionId } = req.body;
 
     try {
-        // Find the nomination with status not set
+        // Find the nomination
         const nomination = await nominationModel.findById(id);
-
         if (!nomination) {
             return res.status(404).json({ error: "Nomination not found!" });
         }
 
-        // If approving the nomination
         if (status === "approve") {
-            nomination.nominationStatus = true; // Approved
-            nomination.nomineeRejectReason = null; // Clear any previous reject reason
+            nomination.nominationStatus = true;
+            nomination.nomineeRejectReason = null; 
             nomination.rejectedBy = null;
-        }
-        // If rejecting the nomination
+
+            // ✅ Push a nominee object instead of just nomineeId
+            await electionModel.findOneAndUpdate(
+                { _id: electionId },
+                { 
+                    $addToSet: { 
+                        electionNominee: { nominationId: id, nomineeName: nomineeId, votes: [] } 
+                    } 
+                },
+                { new: true }
+            );
+        } 
         else if (status === "reject") {
-            nomination.nominationStatus = false; // Rejected
+            nomination.nominationStatus = false;
             nomination.nomineeRejectReason = rejectReason;
             nomination.rejectedBy = rejectedBy;
-        } else {
+        } 
+        else {
             return res.status(400).json({ error: "Invalid status!" });
         }
 
-        // ✅ Update the updatedAt timestamp
+        // ✅ Update timestamp
         nomination.updatedAt = Date.now();
 
-        // Save the updated nomination
         await nomination.save();
         return res.status(200).json({ message: `Nomination ${status}d successfully!` });
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
 };
+
 
 const fetchAllNominationsForList = async (req, res) => {
     const { id: batchId } = req.params;

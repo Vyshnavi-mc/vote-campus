@@ -4645,28 +4645,52 @@
                 });
             });
 
-            const publishButtons = document.querySelectorAll('.publish-btn:not([disabled])');
-            publishButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    Swal.fire({
-                        title: 'Publish Results',
-                        text: 'Are you sure you want to publish these election results?',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#2ecc71',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Yes, publish it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            showToast('Results published successfully!', 'success');
-                            button.innerHTML = '<i class="fas fa-check me-1"></i> Published';
-                            button.classList.remove('btn-outline-success');
-                            button.classList.add('btn-success');
-                            button.disabled = true;
-                        }
-                    });
-                });
+            document.addEventListener('click', function (e) {
+    const button = e.target.closest('.publish-btn');
+    if (!button) return; // If not a publish button, exit
+
+    const electionId = button.getAttribute('data-election-id');
+
+    Swal.fire({
+        title: 'Publish Results',
+        text: 'Are you sure you want to publish these election results?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#2ecc71',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, publish it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`http://localhost:3000/api/election/publish-result/${electionId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to terminate election');
+                return response.json();
+            })
+            .then(data => {
+                showToast('Results published successfully!', 'success');
+                button.innerHTML = '<i class="fas fa-check me-1"></i> Published';
+                button.classList.remove('btn-outline-success');
+                button.classList.add('btn-success');
+                button.disabled = true;
+
+                // Optional: reload or update UI
+                if (typeof loadElectionResults === 'function') {
+                    loadElectionResults();
+                }
+            })
+            .catch(error => {
+                showToast('Error publishing results: ' + error.message, 'error');
             });
+        }
+    });
+});
+
+
 
 
     /////////////////////////////////////////////////////////
@@ -4745,7 +4769,7 @@ async function loadElectionResults() {
                         </div>
                     </div>
                     <div class="result-card-footer" style="display: flex;justify-content: flex-end;">
-                        <button class="btn btn-outline-success btn-sm publish-btn">
+                        <button class="btn btn-outline-success btn-sm publish-btn" data-election-id="${election._id}">
                             <i class="fas fa-share-alt me-1"></i> Publish
                         </button>
                     </div>
@@ -4831,6 +4855,7 @@ function calculateRemainingTime(endTime, timerElement, electionId) {
     const intervals = {};
     intervals[electionId] = setInterval(updateTimer, 1000);
 }
+
 
 
 

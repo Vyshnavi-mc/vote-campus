@@ -10,6 +10,7 @@ const electionSchema = new mongoose.Schema({
     electionVenue: { type: String, required: true },
     isDeleted: { type: Boolean, default: null },
     isTerminated: { type: Boolean, default: null },
+    isPublished: { type: Boolean, default: null },
     isFacultyAccepted: { type: Boolean, default: null },
     facultyRejectReason: { type: String, default: null },
     

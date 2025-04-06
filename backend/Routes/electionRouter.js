@@ -1,5 +1,5 @@
 const express = require('express');
-const { addElection, getAllElection, deleteElection, getSingleElection, getElectionsOnCurrentDay, getFacultyAssignedElection, getApprovedElectionList, getFacultyApproveList, facultyApproveOrReject, startElectionFlag, terminateElectionFlag, getAllStartedElection, castVote, getRunningElection } = require('../Controllers/electionController');
+const { addElection, getAllElection, deleteElection, getSingleElection, getElectionsOnCurrentDay, getFacultyAssignedElection, getApprovedElectionList, getFacultyApproveList, facultyApproveOrReject, startElectionFlag, terminateElectionFlag, getAllStartedElection, castVote, getRunningElection, publishResult, viewElectionResults } = require('../Controllers/electionController');
 const router = express.Router();
 
 router.get('/get-election/:id', getSingleElection);
@@ -17,5 +17,7 @@ router.put('/terminate-election/:id',terminateElectionFlag);
 router.get('/get-started-election',getAllStartedElection);
 router.put('/cast-vote/:id',castVote);
 router.get('/get-running-election',getRunningElection);
+router.put('/publish-result/:id',publishResult);
+router.get('/get-published-result',viewElectionResults);
 
 module.exports={electionRouter:router}

@@ -434,6 +434,54 @@ const getRunningElection = async (req,res) =>{
 }
 
 
+const publishResult = async (req,res)=>{
+    try {
+        const electionId = req.params.id;
+
+        const election = await electionModel.findById(electionId);
+        if (!election) {
+            return res.status(404).json({ error: 'Election not found' });
+        }
+
+        // Set termination flag
+        election.isTerminated = true;
+        election.isPublished = true;
+        await election.save();
+
+        res.status(200).json({ message: 'Election terminated successfully' });
+    } catch (error) {
+        console.error('Error terminating election:', error);
+        res.status(500).json({ error: 'Failed to terminate election' });
+    }
+}
+
+const viewElectionResults  = async (req,res)=>{
+    try {
+    
+
+        const election = await electionModel.find()
+        
+        .populate({
+            path: 'electionNominee.nomineeName',
+            select: 'userFullName profileImage'
+        })
+        .populate('electionBatch', 'name');
+
+        if (!election) {
+            return res.status(404).json({ error: 'Election not found' });
+        }
+
+        return res.status(200).json({
+            message: 'Election results published successfully',
+            election
+        });
+    } catch (error) {
+        console.error('Error publishing election:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
 
 module.exports={
     addElection, 
@@ -450,5 +498,7 @@ module.exports={
     getAllStartedElection,
     checkAndTerminateElections,
     castVote,
-    getRunningElection
+    getRunningElection,
+    publishResult,
+    viewElectionResults
 };

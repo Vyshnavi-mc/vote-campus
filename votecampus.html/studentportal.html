@@ -2082,58 +2082,15 @@
     <div class="modal" id="resultsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Election Results: ECE Year 1 Class Representative</h3>
+                <h3 class="modal-title" id="modalElectionTitle">Election Results</h3>
                 <button class="modal-close" id="closeResultsModal">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="nominee-info">
-                    <div class="nominee-avatar">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
-                    </div>
-                    <div class="nominee-details">
-                        <h4 class="nominee-name">Sarah Johnson (Winner)</h4>
-                        <p class="nominee-role">Class Representative</p>
-                    </div>
-                </div>
-                <div class="result-stats">
-                    <div class="stat-item">
-                        <span class="stat-value">98</span>
-                        <span class="stat-label">Total Votes</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">72%</span>
-                        <span class="stat-label">Winning %</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">3</span>
-                        <span class="stat-label">Candidates</span>
-                    </div>
-                </div>
-                <h4 class="section-title">Vote Distribution</h4>
-                <div class="result-progress">
-                    <p>Sarah Johnson - 72% (98 votes)</p>
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 72%"></div>
-                    </div>
-                </div>
-                <div class="result-progress">
-                    <p>Michael Brown - 18% (24 votes)</p>
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 18%"></div>
-                    </div>
-                </div>
-                <div class="result-progress">
-                    <p>Emily Wilson - 10% (14 votes)</p>
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 10%"></div>
-                    </div>
-                </div>
+            <div class="modal-body" id="resultsModalBody">
             </div>
-            <div class="modal-footer">
-                <button class="form-submit">Download Results</button>
-            </div>
+            
+                
         </div>
     </div>
 
@@ -2437,44 +2394,7 @@
                 </div>
                 
                 <div class="result-card">
-                    <div class="result-card-header">
-                        <h3>ECE Year 1: Class Representative Results</h3>
-                        <span class="result-badge">Completed</span>
-                    </div>
-                    <div class="result-card-body">
-                        <div class="nominee-info">
-                            <div class="nominee-avatar">
-                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
-                            </div>
-                            <div class="nominee-details">
-                                <h4 class="nominee-name">Sarah Johnson (Winner)</h4>
-                                <p class="nominee-role">Class Representative</p>
-                            </div>
-                        </div>
-                        <div class="result-stats">
-                            <div class="stat-item">
-                                <span class="stat-value">98</span>
-                                <span class="stat-label">Total Votes</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value">72%</span>
-                                <span class="stat-label">Winning %</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value">5 days ago</span>
-                                <span class="stat-label">Election Ended</span>
-                            </div>
-                        </div>
-                        <div class="result-progress">
-                            <p>Vote Distribution</p>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: 72%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="result-card-footer">
-                        <button class="vote-button" id="viewResultsButton" style="background-color: var(--accent);">View Details</button>
-                    </div>
+                    <div id="electionResultsContainer"></div>
                 </div>
             </div>
 
@@ -2554,6 +2474,8 @@
             getStudentDetailsOnLoad();
             getAllElectionDropdown();
             loadCurrentElectionForVoting();
+            loadPublishedElections();
+            
             // Menu functionality
             const menuItems = document.querySelectorAll('.menu-item');
             const contentPages = document.querySelectorAll('.content-page');
@@ -2892,6 +2814,137 @@
                 toast.remove();
             }, 3000);
         }
+
+        async function loadPublishedElections() {
+    const container = document.getElementById('electionResultsContainer');
+    container.innerHTML = ''; // Clear previous
+
+    const res = await fetch('http://localhost:3000/api/election/get-published-result');
+    const data = await res.json();
+    const elections = data.election; // FIXED HERE ✅
+
+    console.log(elections);
+
+    elections
+        .filter(e => e.isPublished && e.isTerminated)
+        .forEach(election => {
+            const totalVotes = election.electionNominee.reduce((acc, nominee) => acc + nominee.votes.length, 0);
+            const sortedNominees = election.electionNominee.sort((a, b) => b.votes.length - a.votes.length);
+            const winner = sortedNominees[0];
+            const winningPercent = totalVotes ? ((winner.votes.length / totalVotes) * 100).toFixed(1) : 0;
+
+            const card = document.createElement('div');
+            card.classList.add('result-card');
+            card.innerHTML = `
+                <div class="result-card-header">
+                    <h3>${election.electionName} : ${election.electionRole} Results</h3>
+                    <span class="result-badge">Completed</span>
+                </div>
+                <div class="result-card-body">
+                    <div class="nominee-info">
+                        <div class="nominee-avatar">
+                            <img src="${winner.nomineeName?.profileImage || 'https://via.placeholder.com/100'}" alt="${winner.nomineeName?.userFullName}">
+                        </div>
+                        <div class="nominee-details">
+                            <h4 class="nominee-name">${winner.nomineeName?.userFullName} (Winner)</h4>
+                            <p class="nominee-role">${election.electionRole}</p>
+                        </div>
+                    </div>
+                    <div class="result-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">${winner.votes.length}</span>
+                            <span class="stat-label">Total Votes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">${winningPercent}%</span>
+                            <span class="stat-label">Winning %</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">${new Date(election.electionTo).toLocaleDateString()}</span>
+                            <span class="stat-label">Election Ended</span>
+                        </div>
+                    </div>
+                    <div class="result-progress">
+                        <p>Vote Distribution</p>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: ${winningPercent}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-card-footer">
+                    <button class="vote-button view-results-btn" 
+                            data-election='${JSON.stringify(election)}'
+                            style="background-color: var(--accent);">
+                        View Details
+                    </button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+}
+
+document.addEventListener('click', function (e) {
+    const viewBtn = e.target.closest('.view-results-btn'); // more reliable than classList.contains
+    if (viewBtn) {
+        const electionData = JSON.parse(viewBtn.getAttribute('data-election'));
+        const sortedNominees = electionData.electionNominee.sort((a, b) => b.votes.length - a.votes.length);
+        const totalVotes = sortedNominees.reduce((acc, n) => acc + n.votes.length, 0);
+
+        // Modal title
+        document.getElementById('modalElectionTitle').textContent =
+            `Election Results: ${electionData.electionName} - ${electionData.electionRole}`;
+
+        // Modal body content
+        const modalBody = document.getElementById('resultsModalBody');
+        modalBody.innerHTML = `
+            <div class="nominee-info">
+                <div class="nominee-avatar">
+                    <img src="${sortedNominees[0].nomineeName?.profileImage || 'https://via.placeholder.com/100'}">
+                </div>
+                <div class="nominee-details">
+                    <h4 class="nominee-name">${sortedNominees[0].nomineeName?.userFullName || 'Unknown'} (Winner)</h4>
+                    <p class="nominee-role">${electionData.electionRole}</p>
+                </div>
+            </div>
+            <div class="result-stats">
+                <div class="stat-item">
+                    <span class="stat-value">${totalVotes}</span>
+                    <span class="stat-label">Total Votes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">${((sortedNominees[0].votes.length / totalVotes) * 100).toFixed(1)}%</span>
+                    <span class="stat-label">Winning %</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">${sortedNominees.length}</span>
+                    <span class="stat-label">Candidates</span>
+                </div>
+            </div>
+            <h4 class="section-title">Vote Distribution</h4>
+            ${sortedNominees.map(n => {
+                const percent = totalVotes ? ((n.votes.length / totalVotes) * 100).toFixed(1) : 0;
+                return `
+                    <div class="result-progress">
+                        <p>${n.nomineeName?.userFullName || 'Unnamed'} - ${percent}% (${n.votes.length} votes)</p>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        `;
+
+        // Show the modal
+        document.getElementById('resultsModal').style.display = 'block';
+    }
+
+    // Close modal logic
+    if (e.target.id === 'closeResultsModal' || e.target.closest('#closeResultsModal')) {
+        document.getElementById('resultsModal').style.display = 'none';
+    }
+});
+
+
     </script>
     <script src="student.js"></script>
 </body>
